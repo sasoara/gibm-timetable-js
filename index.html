@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    <title>Stundenplan</title>
+</head>
+
+<body class="container-fluid">
+    <h1>Stundenplan GIBM</h1>
+    <p class="lead">Gründenstrasse 46,
+        4132 Muttenz
+    </p>
+
+    <div class="container mt-5">
+        <div id="message" class="alert alert-warning" hidden></div>
+        <form action="" method="GET">
+            <h3>Berufsgruppe</h3>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Optionen</label>
+                </div>
+                <select class="custom-select berufsgruppe" id="inputGroupSelect01">
+                    <option selected>Wählen Sie einen Beruf aus</option>
+                </select>
+            </div>
+            <h3>Klassenauswahl</h3>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Optionen</label>
+                </div>
+                <select class="custom-select klassenauswahl" id="inputGroupSelect01">
+                    <option selected>Bitte Klasse wählen</option>
+                    <option value="1">Applikationsentwickler*innen IAP17A</option>
+                    <option value="2">Applikationsentwickler*innen IAP17B</option>
+                    <option value="3">Landschaft G17-20A</option>
+                    <option value="4">Zierpflanzen G17-20B</option>
+                </select>
+            </div>
+            <h3>Lehrperson</h3>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Optionen</label>
+                </div>
+                <select class="custom-select" id="inputGroupSelect01">
+                    <option selected>Bitte Lehrperson wählen</option>
+                    <option value="1">Abt Tobias</option>
+                    <option value="2">Bader Markus</option>
+                    <option value="3">Bögli Thomas</option>
+                    <option value="4">Brodbeck Daniel</option>
+                </select>
+            </div>
+        </form>
+
+
+        <div id="anzeige" class="pt-5 d-table mx-auto">
+            <button type="button" class="btn btn-outline-dark btn-sm">&lt; vorherige Woche</button>
+            <label class="px-5">Woche 07-2020</label>
+            <button type="button" class="btn btn-outline-dark btn-sm">nächste Woche &gt;</button>
+        </div>
+
+
+        <!-- <div class="mt-5 spinner-grow d-table mx-auto" role="status">
+            <span class="sr-only">Loading...</span>
+        </div> -->
+
+
+        <div class="table-responsive mt-5">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Datum</th>
+                        <th scope="col">Wochentag</th>
+                        <th scope="col">Von</th>
+                        <th scope="col">Bis</th>
+                        <th scope="col">Lehrer</th>
+                        <th scope="col">Fach</th>
+                        <th scope="col">Raum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">11.03.2020</th>
+                        <td>Dienstag</td>
+                        <td>08:05</td>
+                        <td>11:35</td>
+                        <td>Küng Thomas</td>
+                        <td>Turnen und Sport</td>
+                        <td>Turnen Gründen</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">12.03.2020</th>
+                        <td>Mittwoch</td>
+                        <td>08:05</td>
+                        <td>11:35</td>
+                        <td>Brodbeck Daniel</td>
+                        <td>133 Web-Applikation realisieren</td>
+                        <td>P.2.6</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script>
+            // jQuery check, ob der DOM geladen ist.
+            $(function () {
+
+                makeOptionGroup();
+
+                // holt bzw. returned die Daten der Schulwebseite
+                function getBerufe() {
+                    return $.getJSON("http://sandbox.gibm.ch/berufe.php")
+
+                        .done(function (berufe) {
+                            return berufe;
+                        })
+
+                        .fail(function () {
+                            $("div.alert").removeAttr("hidden");
+                            return $("div.alert").text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+                        });
+                }
+
+                // zeigt die Berufsgruppen an
+                function makeOptionGroup() {
+                    getBerufe().then(jobs => {
+                        const firstLetters = $.unique(jobs.map((job) => job.beruf_name.charAt(0)));
+                        const selectGroupOptions = firstLetters.map((letter) => `<optgroup label=${letter}></optgroup>`);
+                        $('select.berufsgruppe').append(selectGroupOptions);
+
+                        const selectOptions = jobs.map((job) => {
+                            return {
+                                name: job.beruf_name,
+                                tag: `<option value=${job.beruf_id}>${job.beruf_name}</option>`
+                            }
+                        });
+
+                        selectOptions.forEach((option) => {
+                            const optionGroup = $(`optgroup[label = ${option.name.charAt(0)}]`);
+                            optionGroup.append(option.tag);
+                        });
+
+
+                        /* firstLetters.forEach(letter => {
+                            const optionGroup = $(`optgroup[label = ${letter}]`);
+                            selectOptions
+                                .filter((option) => option.name.charAt(0) == letter)
+                                .map((option) => option.tag)
+                                .forEach((option) => optionGroup.append(option));
+                        }); */
+                    });
+                }
+
+            });
+        </script>
+    </div>
+
+</body>
+
+</html>
