@@ -31,16 +31,16 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="inputGroupSelect01">Optionen</label>
                 </div>
-                <select class="custom-select berufsgruppe" id="inputGroupSelect01">
-                    <option selected>Wählen Sie einen Beruf aus</option>
+                <select class="custom-select berufsgruppe" id="inputGroupSelect01" onchange="testChange()">
+                    <option>Wählen Sie einen Beruf aus</option>
                 </select>
             </div>
             <h3>Klassenauswahl</h3>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text" for="inputGroupSelect01">Optionen</label>
+                    <label class="input-group-text" for="inputGroupSelect02">Optionen</label>
                 </div>
-                <select class="custom-select klassenauswahl" id="inputGroupSelect01">
+                <select class="custom-select klassenauswahl" id="inputGroupSelect02">
                     <option selected>Bitte Klasse wählen</option>
                     <option value="1">Applikationsentwickler*innen IAP17A</option>
                     <option value="2">Applikationsentwickler*innen IAP17B</option>
@@ -51,9 +51,9 @@
             <h3>Lehrperson</h3>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text" for="inputGroupSelect01">Optionen</label>
+                    <label class="input-group-text" for="inputGroupSelect03">Optionen</label>
                 </div>
-                <select class="custom-select" id="inputGroupSelect01">
+                <select class="custom-select lehrperson" id="inputGroupSelect03">
                     <option selected>Bitte Lehrperson wählen</option>
                     <option value="1">Abt Tobias</option>
                     <option value="2">Bader Markus</option>
@@ -135,7 +135,8 @@
                 function makeOptionGroup() {
                     getBerufe().then(jobs => {
                         const firstLetters = $.unique(jobs.map((job) => job.beruf_name.charAt(0)));
-                        const selectGroupOptions = firstLetters.map((letter) => `<optgroup label=${letter}></optgroup>`);
+                        const selectGroupOptions = firstLetters.map((letter) =>
+                            `<optgroup label=${letter}></optgroup>`);
                         $('select.berufsgruppe').append(selectGroupOptions);
 
                         const selectOptions = jobs.map((job) => {
@@ -149,19 +150,15 @@
                             const optionGroup = $(`optgroup[label = ${option.name.charAt(0)}]`);
                             optionGroup.append(option.tag);
                         });
-
-
-                        /* firstLetters.forEach(letter => {
-                            const optionGroup = $(`optgroup[label = ${letter}]`);
-                            selectOptions
-                                .filter((option) => option.name.charAt(0) == letter)
-                                .map((option) => option.tag)
-                                .forEach((option) => optionGroup.append(option));
-                        }); */
                     });
                 }
-
             });
+
+            function testChange() {
+                const x = $('select#berufsgruppe');
+                console.log(x);
+                console.log(document.getElementById('inputGroupSelect01').querySelector("option:checked"));
+            }
         </script>
     </div>
 
