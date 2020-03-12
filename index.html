@@ -29,36 +29,23 @@
             <h3>Berufsgruppe</h3>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text" for="inputGroupSelect01">Optionen</label>
+                    <label class="input-group-text" for="berufsgruppenAuswahl">Optionen</label>
                 </div>
-                <select class="custom-select berufsgruppe" id="inputGroupSelect01" onchange="testChange()">
+                <select class="custom-select berufsgruppe" id="berufsgruppenAuswahl" onchange="testChange()">
                     <option>Wählen Sie einen Beruf aus</option>
                 </select>
             </div>
             <h3>Klassenauswahl</h3>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text" for="inputGroupSelect02">Optionen</label>
+                    <label class="input-group-text" for="klassenAuswahl">Optionen</label>
                 </div>
-                <select class="custom-select klassenauswahl" id="inputGroupSelect02">
+                <select class="custom-select klassenauswahl" id="klassenAuswahl">
                     <option selected>Bitte Klasse wählen</option>
                     <option value="1">Applikationsentwickler*innen IAP17A</option>
                     <option value="2">Applikationsentwickler*innen IAP17B</option>
                     <option value="3">Landschaft G17-20A</option>
                     <option value="4">Zierpflanzen G17-20B</option>
-                </select>
-            </div>
-            <h3>Lehrperson</h3>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <label class="input-group-text" for="inputGroupSelect03">Optionen</label>
-                </div>
-                <select class="custom-select lehrperson" id="inputGroupSelect03">
-                    <option selected>Bitte Lehrperson wählen</option>
-                    <option value="1">Abt Tobias</option>
-                    <option value="2">Bader Markus</option>
-                    <option value="3">Bögli Thomas</option>
-                    <option value="4">Brodbeck Daniel</option>
                 </select>
             </div>
         </form>
@@ -157,7 +144,7 @@
             function testChange() {
                 const x = $('select#berufsgruppe');
                 console.log(x);
-                console.log(document.getElementById('inputGroupSelect01').querySelector("option:checked"));
+                console.log(document.getElementById('berufsgruppenAuswahl').querySelector("option:checked"));
             }
         </script>
     </div>
