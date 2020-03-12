@@ -118,6 +118,18 @@
                 return firstLetters.map((letter) => `<optgroup label=${letter}></optgroup>`);
             }
 
+            function prepareOptions(jobs) {
+                const selectOptions = jobs.map((job) => {
+                    const objOptions = {
+                        name: job.beruf_name,
+                        tag: `<option value=${job.beruf_id}>${job.beruf_name}</option>`
+                    }
+                    /* console.log(objOptions); */
+                    return objOptions;
+                });
+                return selectOptions;
+            }
+
             // jQuery check, ob der DOM geladen ist.
             $(function () {
 
@@ -125,15 +137,9 @@
                     const optionGroups = prepareOptionGroupsForBerufsgruppe(jobs);
                     $('select.berufsgruppe').append(optionGroups);
 
-
-                    const selectOptions = jobs.map((job) => {
-                        return {
-                            name: job.beruf_name,
-                            tag: `<option value=${job.beruf_id}>${job.beruf_name}</option>`
-                        }
-                    });
-
-                    selectOptions.forEach((option) => {
+                    const options = prepareOptions(jobs);
+                    /* console.log(options); */
+                    options.forEach((option) => {
                         const optionGroup = $(`optgroup[label = ${option.name[0]}]`);
                         optionGroup.append(option.tag);
                     });
@@ -143,8 +149,8 @@
 
 
             function testChange() {
-                const x = $('select#berufsgruppe');
-                console.log(x);
+                /* const x = $('select#berufsgruppe');
+                console.log(x); */
                 console.log(document.getElementById('berufsgruppenAuswahl').querySelector("option:checked"));
             }
         </script>
