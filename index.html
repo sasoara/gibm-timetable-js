@@ -140,31 +140,20 @@
 
     function prepareOptionsKlassen(klassen) {
         const selectOptions = klassen.map((klasse) => {
-            const objOptions = {
-                name: klasse.klasse_name,
-                tag: `<option value=${klasse.klasse_id}>${klasse.klasse_name}</option>`
-            }
+            const objOptions = `<option value=${klasse.klasse_id}>${klasse.klasse_name}</option>`
             return objOptions;
         });
         return selectOptions;
     }
 
     function handleSelectedJob() {
-        /* const job = $('#berufsgruppenAuswahl').children().children(':selected'); */
         const job = $('#berufsgruppenAuswahl >> option:selected');
-        /*
-        const jobName = job.text();
-        const jobValue = job.val();
-        */
-
-       // TODO: implement the handling with selected jobs
         getKlassen(job.val()).then(klassen => {
             const options = prepareOptionsKlassen(klassen);
             options.forEach((option) => {
-                $('#klassenAuswahl').append(option.tag);
+                $('#klassenAuswahl').append(option);
             });
         });
-
     }
 
     // jQuery check, ob der DOM geladen ist.
