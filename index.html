@@ -32,7 +32,7 @@
                     <label class="input-group-text" for="berufsgruppenAuswahl">Optionen</label>
                 </div>
                 <select class="custom-select berufsgruppe" id="berufsgruppenAuswahl">
-                    <option>Wählen Sie einen Beruf aus</option>
+                    <option selected>Wählen Sie einen Beruf aus</option>
                 </select>
             </div>
             <h3>Klassenauswahl</h3>
@@ -42,10 +42,6 @@
                 </div>
                 <select class="custom-select klassenauswahl" id="klassenAuswahl">
                     <option selected>Bitte Klasse wählen</option>
-                    <option value="1">Applikationsentwickler*innen IAP17A</option>
-                    <option value="2">Applikationsentwickler*innen IAP17B</option>
-                    <option value="3">Landschaft G17-20A</option>
-                    <option value="4">Zierpflanzen G17-20B</option>
                 </select>
             </div>
         </form>
@@ -110,8 +106,19 @@
             })
 
             .fail(function () {
-                $("div.alert").removeAttr("hidden");
-                return $("div.alert").text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+                return $("div.alert").removeAttr("hidden").text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+            });
+    }
+
+    function getKlassen(beruf_id = 0) {
+        return $.getJSON("http://sandbox.gibm.ch/klassen.php?beruf_id=" + beruf_id)
+
+            .done(function (schoolClasses) {
+                return schoolClasses;
+            })
+
+            .fail(function () {
+                return $("div.alert").removeAttr("hidden").text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
             });
     }
 
@@ -120,7 +127,7 @@
         return firstLetters.map((letter) => `<optgroup label=${letter}></optgroup>`);
     }
 
-    function prepareOptions(jobs) {
+    function prepareOptionsBerufe(jobs) {
         const selectOptions = jobs.map((job) => {
             const objOptions = {
                 name: job.beruf_name,
@@ -131,9 +138,33 @@
         return selectOptions;
     }
 
+    function prepareOptionsKlassen(klassen) {
+        const selectOptions = klassen.map((klasse) => {
+            const objOptions = {
+                name: klasse.klasse_name,
+                tag: `<option value=${klasse.klasse_id}>${klasse.klasse_name}</option>`
+            }
+            return objOptions;
+        });
+        return selectOptions;
+    }
+
     function handleSelectedJob() {
-        console.log(document.getElementById('berufsgruppenAuswahl').querySelector("option:checked"));
-        // TODO: implement the handling with selected jobs
+        /* const job = $('#berufsgruppenAuswahl').children().children(':selected'); */
+        const job = $('#berufsgruppenAuswahl >> option:selected');
+        /*
+        const jobName = job.text();
+        const jobValue = job.val();
+        */
+
+       // TODO: implement the handling with selected jobs
+        getKlassen(job.val()).then(klassen => {
+            const options = prepareOptionsKlassen(klassen);
+            options.forEach((option) => {
+                $('#klassenAuswahl').append(option.tag);
+            });
+        });
+
     }
 
     // jQuery check, ob der DOM geladen ist.
@@ -143,7 +174,7 @@
             const optionGroups = prepareOptionGroupsForBerufsgruppe(jobs);
             $('select.berufsgruppe').append(optionGroups);
 
-            const options = prepareOptions(jobs);
+            const options = prepareOptionsBerufe(jobs);
             options.forEach((option) => {
                 const optionGroup = $(`optgroup[label = ${option.name[0]}]`);
                 optionGroup.append(option.tag);
