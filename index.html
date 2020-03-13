@@ -41,7 +41,6 @@
                     <label class="input-group-text" for="klassenAuswahl">Optionen</label>
                 </div>
                 <select class="custom-select klassenauswahl" id="klassenAuswahl">
-                    <option selected>Bitte Klasse wählen</option>
                 </select>
             </div>
         </form>
@@ -150,8 +149,9 @@
         const job = $('#berufsgruppenAuswahl >> option:selected');
         getKlassen(job.val()).then(klassen => {
             const options = prepareOptionsKlassen(klassen);
+            $("#klassenAuswahl").html('<option selected>Bitte Klasse wählen</option>');
             options.forEach((option) => {
-                $('#klassenAuswahl').append(option);
+                $("#klassenAuswahl").append(option);
             });
         });
     }
