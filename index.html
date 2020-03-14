@@ -121,6 +121,18 @@
             });
     }
 
+    function getTafel(klasse_id = 0) {
+        return $.getJSON("http://sandbox.gibm.ch/tafel.php?klasse_id=" + klasse_id)
+
+            .done(function (timeTable) {
+                return timeTable;
+            })
+
+            .fail(function () {
+                return $("div.alert").removeAttr("hidden").text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+            });
+    }
+
     function prepareOptionGroupsForBerufsgruppe(jobs) {
         const firstLetters = $.unique(jobs.map((job) => job.beruf_name[0]));
         return firstLetters.map((letter) => `<optgroup label=${letter}></optgroup>`);
@@ -156,6 +168,17 @@
         });
     }
 
+    function handleSelectedClass() {
+        const selectedClass = $('#klassenAuswahl > option:selected');
+        getTafel(selectedClass.val()).then(tafeln => {
+
+            console.log(tafeln);
+            tafeln.forEach((tafel) => {
+                console.log(tafel);
+            });
+        });
+    }
+
     // jQuery check, ob der DOM geladen ist.
     $(function () {
 
@@ -171,6 +194,7 @@
         });
 
         $('#berufsgruppenAuswahl').on("change", handleSelectedJob);
+        $('#klassenAuswahl').on("change", handleSelectedClass);
     });
 </script>
 
