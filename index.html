@@ -103,10 +103,29 @@
             });
     }
 
+    function getCurrentWeekNumber_Year() {
+        const today = new Date();
+        const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+        const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
+        const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        return `${weekNumber}-${today.getFullYear()}`;
+    }
+
+    function previousWeek_Year() {
+        const current = getCurrentWeekNumber_Year();
+        const splitCurrent = current.split('-');
+        return `${splitCurrent[0] - 1}-${splitCurrent[1]}`;
+    }
+
+    function nextWeek_Year() {
+        const current = getCurrentWeekNumber_Year();
+        const splitCurrent = current.split('-');
+        return `${1 + parseInt(splitCurrent[0])}-${splitCurrent[1]}`;
+    }
+
     function getTafel(klasse_id = 0, woche) {
         const url = woche ? `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}&woche=${woche}` :
             `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}`;
-        console.log(url);
         return $.getJSON(url)
 
             .done(function (timeTable) {
@@ -153,6 +172,16 @@
         });
     }
 
+    function formatDate(dateString) {
+        const splitDate = dateString.split('-');
+        return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`;
+    }
+
+    function formatWeekday(dayAsNumber) {
+        const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+        return days[dayAsNumber];
+    }
+
     function handleSelectedClass() {
         const selectedClass = $('#klassenAuswahl > option:selected');
         getTafel(selectedClass.val()).then((tafeln) => {
@@ -174,14 +203,9 @@
         });
     }
 
-    function formatDate(dateString) {
-        const splitDate = dateString.split('-');
-        return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`;
-    }
-
-    function formatWeekday(dayAsNumber) {
-        const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
-        return days[dayAsNumber];
+    function handleWeekButtons(param) {
+        // TODO: the handling if previous or next button is clicked.
+        return;
     }
 
     // jQuery check, ob der DOM geladen ist.
