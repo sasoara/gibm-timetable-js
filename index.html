@@ -72,24 +72,6 @@
                     </tr>
                 </thead>
                 <tbody id="time-table">
-                    <tr>
-                        <th scope="row">11.03.2020</th>
-                        <td>Dienstag</td>
-                        <td>08:05</td>
-                        <td>11:35</td>
-                        <td>Küng Thomas</td>
-                        <td>Turnen und Sport</td>
-                        <td>Turnen Gründen</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">12.03.2020</th>
-                        <td>Mittwoch</td>
-                        <td>08:05</td>
-                        <td>11:35</td>
-                        <td>Brodbeck Daniel</td>
-                        <td>133 Web-Applikation realisieren</td>
-                        <td>P.2.6</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -173,10 +155,20 @@
     function handleSelectedClass() {
         const selectedClass = $('#klassenAuswahl > option:selected');
         getTafel(selectedClass.val(), '08-2020').then((tafeln) => {
-
-            console.log(tafeln);
+            const table = $('#time-table');
+            table.html('');
             tafeln.forEach((tafel) => {
-                console.log(tafel);
+                const table_th = `<th scope='row'>${tafel.tafel_datum}</th>`;
+                const table_td = {
+                    wochentag: `<td>${tafel.tafel_wochentag}</td>`,
+                    von: `<td>${tafel.tafel_von}</td>`,
+                    bis: `<td>${tafel.tafel_bis}</td>`,
+                    lehrer: `<td>${tafel.tafel_lehrer}</td>`,
+                    fach: `<td>${tafel.tafel_fach}</td>`,
+                    raum: `<td>${tafel.tafel_raum}</td>`
+                }
+                const table_tr = `<tr>${table_th}${table_td.wochentag + table_td.von + table_td.bis + table_td.lehrer + table_td.fach + table_td.raum}</tr>`;
+                table.append(table_tr);
             });
         });
     }
