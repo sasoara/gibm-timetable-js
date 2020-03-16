@@ -47,9 +47,9 @@
 
 
         <div id="anzeige" class="pt-5 d-table mx-auto">
-            <button type="button" class="btn btn-outline-dark btn-sm">&lt; vorherige Woche</button>
-            <label class="px-5">Woche 07-2020</label>
-            <button type="button" class="btn btn-outline-dark btn-sm">nächste Woche &gt;</button>
+            <button id="previous" type="button" class="btn btn-outline-dark btn-sm">&lt; vorherige Woche</button>
+            <label class="px-5">Woche <span id="week"></span></label>
+            <button id="next" type="button" class="btn btn-outline-dark btn-sm">nächste Woche &gt;</button>
         </div>
 
 
@@ -111,14 +111,12 @@
         return `${weekNumber}-${today.getFullYear()}`;
     }
 
-    function previousWeek_Year() {
-        const current = getCurrentWeekNumber_Year();
+    function previousWeek_Year(current) {
         const splitCurrent = current.split('-');
         return `${splitCurrent[0] - 1}-${splitCurrent[1]}`;
     }
 
-    function nextWeek_Year() {
-        const current = getCurrentWeekNumber_Year();
+    function nextWeek_Year(current) {
         const splitCurrent = current.split('-');
         return `${1 + parseInt(splitCurrent[0])}-${splitCurrent[1]}`;
     }
@@ -184,27 +182,48 @@
 
     function handleSelectedClass() {
         const selectedClass = $('#klassenAuswahl > option:selected');
+        $('#week').text(getCurrentWeekNumber_Year());
         getTafel(selectedClass.val()).then((tafeln) => {
             const table = $('#time-table');
             table.html('');
-            tafeln.forEach((tafel) => {
-                const table_th = `<th scope='row'>${formatDate(tafel.tafel_datum)}</th>`;
-                const table_td = {
-                    wochentag: `<td>${formatWeekday(tafel.tafel_wochentag)}</td>`,
-                    von: `<td>${tafel.tafel_von}</td>`,
-                    bis: `<td>${tafel.tafel_bis}</td>`,
-                    lehrer: `<td>${tafel.tafel_lehrer}</td>`,
-                    fach: `<td>${tafel.tafel_fach}</td>`,
-                    raum: `<td>${tafel.tafel_raum}</td>`
-                }
-                const table_tr = `<tr>${table_th}${table_td.wochentag + table_td.von + table_td.bis + table_td.lehrer + table_td.fach + table_td.raum}</tr>`;
-                table.append(table_tr);
-            });
+            const tableContent = getTableContent(tafeln);
+            table.append(tableContent);
         });
     }
 
-    function handleWeekButtons(param) {
+    function getTableContent(tafeln) {
+        return tafeln.map((tafel) => {
+            const table_th = `<th scope='row'>${formatDate(tafel.tafel_datum)}</th>`;
+            const table_td = {
+                wochentag: `<td>${formatWeekday(tafel.tafel_wochentag)}</td>`,
+                von: `<td>${tafel.tafel_von}</td>`,
+                bis: `<td>${tafel.tafel_bis}</td>`,
+                lehrer: `<td>${tafel.tafel_lehrer}</td>`,
+                fach: `<td>${tafel.tafel_fach}</td>`,
+                raum: `<td>${tafel.tafel_raum}</td>`
+            }
+            return `<tr>${table_th}${table_td.wochentag + table_td.von + table_td.bis + table_td.lehrer + table_td.fach + table_td.raum}</tr>`;
+        });
+    }
+
+    function handlePreviousWeekButton() {
+        const selectedClass = $('#klassenAuswahl > option:selected');
+        const previousWeek = previousWeek_Year($('#week').text());
+        $('#week').text(previousWeek);
+        getTafel(selectedClass.val(), previousWeek).then((tafeln) => {
+            const table = $('#time-table');
+            table.html('');
+            const tableContent = getTableContent(tafeln);
+            table.append(tableContent);
+        });
+        return;
+    }
+
+    function handleNextWeekButton() {
         // TODO: the handling if previous or next button is clicked.
+        const prev = $('#previous');
+        const next = $('#next');
+        console.log('vor');
         return;
     }
 
@@ -224,6 +243,8 @@
 
         $('#berufsgruppenAuswahl').on('change', handleSelectedJob);
         $('#klassenAuswahl').on('change', handleSelectedClass);
+        $('#previous').on('click', handlePreviousWeekButton);
+        $('#next').on('click', handleNextWeekButton);
     });
 </script>
 
