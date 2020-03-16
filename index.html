@@ -182,7 +182,8 @@
 
     function handleSelectedClass() {
         const selectedClass = $('#klassenAuswahl > option:selected');
-        $('#week').text(getCurrentWeekNumber_Year());
+        const lableWeek = $('#week');
+        lableWeek.text(getCurrentWeekNumber_Year());
         getTafel(selectedClass.val()).then((tafeln) => {
             const table = $('#time-table');
             table.html('');
@@ -206,11 +207,12 @@
         });
     }
 
-    function handlePreviousWeekButton() {
+    function handleWeekButton(handleWeekFunction) {
         const selectedClass = $('#klassenAuswahl > option:selected');
-        const previousWeek = previousWeek_Year($('#week').text());
-        $('#week').text(previousWeek);
-        getTafel(selectedClass.val(), previousWeek).then((tafeln) => {
+        const lableWeek = $('#week');
+        const anotherWeek = handleWeekFunction(lableWeek.text());
+        lableWeek.text(anotherWeek);
+        getTafel(selectedClass.val(), anotherWeek).then((tafeln) => {
             const table = $('#time-table');
             table.html('');
             const tableContent = getTableContent(tafeln);
@@ -219,12 +221,12 @@
         return;
     }
 
+    function handlePreviousWeekButton() {
+        handleWeekButton(previousWeek_Year);
+    }
+
     function handleNextWeekButton() {
-        // TODO: the handling if previous or next button is clicked.
-        const prev = $('#previous');
-        const next = $('#next');
-        console.log('vor');
-        return;
+        handleWeekButton(nextWeek_Year);
     }
 
     // jQuery check, ob der DOM geladen ist.
