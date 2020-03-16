@@ -71,7 +71,7 @@
                         <th scope="col">Raum</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="time-table">
                     <tr>
                         <th scope="row">11.03.2020</th>
                         <td>Dienstag</td>
@@ -98,38 +98,40 @@
 <script>
     // holt bzw. returned die Daten der Schulwebseite
     function getBerufe() {
-        return $.getJSON("http://sandbox.gibm.ch/berufe.php")
+        return $.getJSON(`http://sandbox.gibm.ch/berufe.php`)
 
             .done(function (jobs) {
                 return jobs;
             })
 
             .fail(function () {
-                return $("div.alert").removeAttr("hidden").text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+                return $('div.alert').removeAttr('hidden').text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
             });
     }
 
     function getKlassen(beruf_id = 0) {
-        return $.getJSON("http://sandbox.gibm.ch/klassen.php?beruf_id=" + beruf_id)
+        return $.getJSON(`http://sandbox.gibm.ch/klassen.php?beruf_id=${beruf_id}`)
 
             .done(function (schoolClasses) {
                 return schoolClasses;
             })
 
             .fail(function () {
-                return $("div.alert").removeAttr("hidden").text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+                return $('div.alert').removeAttr('hidden').text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
             });
     }
 
-    function getTafel(klasse_id = 0) {
-        return $.getJSON("http://sandbox.gibm.ch/tafel.php?klasse_id=" + klasse_id)
+    function getTafel(klasse_id = 0, woche) {
+        const url = `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}&woche=${woche}`;
+        console.log(url);
+        return $.getJSON(url)
 
             .done(function (timeTable) {
                 return timeTable;
             })
 
             .fail(function () {
-                return $("div.alert").removeAttr("hidden").text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+                return $('div.alert').removeAttr('hidden').text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
             });
     }
 
@@ -159,18 +161,18 @@
 
     function handleSelectedJob() {
         const job = $('#berufsgruppenAuswahl >> option:selected');
-        getKlassen(job.val()).then(klassen => {
+        getKlassen(job.val()).then((klassen) => {
             const options = prepareOptionsKlassen(klassen);
-            $("#klassenAuswahl").html('<option selected>Bitte Klasse wählen</option>');
+            $('#klassenAuswahl').html('<option selected>Bitte Klasse wählen</option>');
             options.forEach((option) => {
-                $("#klassenAuswahl").append(option);
+                $('#klassenAuswahl').append(option);
             });
         });
     }
 
     function handleSelectedClass() {
         const selectedClass = $('#klassenAuswahl > option:selected');
-        getTafel(selectedClass.val()).then(tafeln => {
+        getTafel(selectedClass.val(), '08-2020').then((tafeln) => {
 
             console.log(tafeln);
             tafeln.forEach((tafel) => {
@@ -182,7 +184,7 @@
     // jQuery check, ob der DOM geladen ist.
     $(function () {
 
-        getBerufe().then(jobs => {
+        getBerufe().then((jobs) => {
             const optionGroups = prepareOptionGroupsForBerufsgruppe(jobs);
             $('select.berufsgruppe').append(optionGroups);
 
@@ -193,8 +195,8 @@
             });
         });
 
-        $('#berufsgruppenAuswahl').on("change", handleSelectedJob);
-        $('#klassenAuswahl').on("change", handleSelectedClass);
+        $('#berufsgruppenAuswahl').on('change', handleSelectedJob);
+        $('#klassenAuswahl').on('change', handleSelectedClass);
     });
 </script>
 
