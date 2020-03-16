@@ -104,7 +104,8 @@
     }
 
     function getTafel(klasse_id = 0, woche) {
-        const url = `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}&woche=${woche}`;
+        const url = woche ? `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}&woche=${woche}` :
+            `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}`;
         console.log(url);
         return $.getJSON(url)
 
@@ -154,13 +155,13 @@
 
     function handleSelectedClass() {
         const selectedClass = $('#klassenAuswahl > option:selected');
-        getTafel(selectedClass.val(), '08-2020').then((tafeln) => {
+        getTafel(selectedClass.val()).then((tafeln) => {
             const table = $('#time-table');
             table.html('');
             tafeln.forEach((tafel) => {
-                const table_th = `<th scope='row'>${tafel.tafel_datum}</th>`;
+                const table_th = `<th scope='row'>${formatDate(tafel.tafel_datum)}</th>`;
                 const table_td = {
-                    wochentag: `<td>${tafel.tafel_wochentag}</td>`,
+                    wochentag: `<td>${formatWeekday(tafel.tafel_wochentag)}</td>`,
                     von: `<td>${tafel.tafel_von}</td>`,
                     bis: `<td>${tafel.tafel_bis}</td>`,
                     lehrer: `<td>${tafel.tafel_lehrer}</td>`,
@@ -171,6 +172,16 @@
                 table.append(table_tr);
             });
         });
+    }
+
+    function formatDate(dateString) {
+        const splitDate = dateString.split('-');
+        return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`;
+    }
+
+    function formatWeekday(dayAsNumber) {
+        const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+        return days[dayAsNumber];
     }
 
     // jQuery check, ob der DOM geladen ist.
