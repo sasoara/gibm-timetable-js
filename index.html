@@ -53,9 +53,9 @@
         </div>
 
 
-        <!-- <div class="mt-5 spinner-grow d-table mx-auto" role="status">
+        <div class="mt-5 spinner-grow d-table mx-auto" role="status">
             <span class="sr-only">Loading...</span>
-        </div> -->
+        </div>
 
 
         <div class="table-responsive mt-5">
@@ -181,15 +181,7 @@
     }
 
     function handleSelectedClass() {
-        const selectedClass = $('#klassenAuswahl > option:selected');
-        const lableWeek = $('#week');
-        lableWeek.text(getCurrentWeekNumber_Year());
-        getTafel(selectedClass.val()).then((tafeln) => {
-            const table = $('#time-table');
-            table.html('');
-            const tableContent = getTableContent(tafeln);
-            table.append(tableContent);
-        });
+        fillTimeTable();
     }
 
     function getTableContent(tafeln) {
@@ -207,10 +199,10 @@
         });
     }
 
-    function handleWeekButton(handleWeekFunction) {
+    function fillTimeTable(handleWeekFunction) {
         const selectedClass = $('#klassenAuswahl > option:selected');
         const lableWeek = $('#week');
-        const anotherWeek = handleWeekFunction(lableWeek.text());
+        const anotherWeek = handleWeekFunction ? handleWeekFunction(lableWeek.text()) : getCurrentWeekNumber_Year();
         lableWeek.text(anotherWeek);
         getTafel(selectedClass.val(), anotherWeek).then((tafeln) => {
             const table = $('#time-table');
@@ -218,15 +210,14 @@
             const tableContent = getTableContent(tafeln);
             table.append(tableContent);
         });
-        return;
     }
 
     function handlePreviousWeekButton() {
-        handleWeekButton(previousWeek_Year);
+        fillTimeTable(previousWeek_Year);
     }
 
     function handleNextWeekButton() {
-        handleWeekButton(nextWeek_Year);
+        fillTimeTable(nextWeek_Year);
     }
 
     // jQuery check, ob der DOM geladen ist.
