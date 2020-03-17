@@ -51,14 +51,15 @@
             <label class="px-5">Woche <span id="week"></span></label>
             <button id="next" type="button" class="btn btn-dark btn-sm">vor &gt;</button>
         </div> -->
-
-        <div class="btn-group mb-2 pt-4 d-table mx-auto">
-            <button type="button" class="btn btn-light" id="previous" style="background-color: #e9ecef;
+        <div id="wochenanzeige" hidden>
+            <div class="btn-group mb-2 pt-4 d-table mx-auto">
+                <button type=" button" class="btn btn-light" id="previous" style="background-color: #e9ecef;
                 border: 1px solid #ced4da;">«</button>
-            <button type="button" class="btn btn-light" style="background-color: #ffffff;
+                <button type="button" class="btn btn-light" style="background-color: #ffffff;
                 border: 1px solid #ced4da;">Woche <span id="week"></span></button>
-            <button type="button" class="btn btn-light" id="next" style="background-color: #e9ecef;
+                <button type="button" class="btn btn-light" id="next" style="background-color: #e9ecef;
                 border: 1px solid #ced4da;">»</button>
+            </div>
         </div>
 
         <!-- <div class="bs-example mt-5">
@@ -73,7 +74,7 @@
         </div> -->
 
 
-        <div class="table-responsive mt-5">
+        <div class="table-responsive mt-5" id="tafel" hidden>
             <table class="table">
                 <thead class="thead-light">
                     <tr>
@@ -175,6 +176,7 @@
     }
 
     function handleSelectedJob() {
+        handleElementDisplaying(false);
         const job = $('#berufsgruppenAuswahl >> option:selected');
         getKlassen(job.val()).then((klassen) => {
             const options = prepareOptionsKlassen(klassen);
@@ -223,6 +225,7 @@
             const tableContent = getTableContent(tafeln);
             table.append(tableContent);
         });
+        handleElementDisplaying(true);
     }
 
     function handlePreviousWeekButton() {
@@ -231,6 +234,18 @@
 
     function handleNextWeekButton() {
         fillTimeTable(nextWeek_Year);
+    }
+
+    function handleElementDisplaying(visible) {
+        const tafel = $('#tafel');
+        const wochenanzeige = $('#wochenanzeige');
+        if (visible) {
+            tafel.removeAttr('hidden');
+            wochenanzeige.removeAttr('hidden');
+        } else {
+            tafel.attr('hidden', true);
+            wochenanzeige.attr('hidden', true);
+        }
     }
 
     // jQuery check, ob der DOM geladen ist.
@@ -247,6 +262,7 @@
             });
         });
 
+        handleElementDisplaying(false);
         $('#berufsgruppenAuswahl').on('change', handleSelectedJob);
         $('#klassenAuswahl').on('change', handleSelectedClass);
         $('#previous').on('click', handlePreviousWeekButton);
