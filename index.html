@@ -46,11 +46,26 @@
         </form>
 
 
-        <div id="anzeige" class="pt-5 d-table mx-auto">
-            <button id="previous" type="button" class="btn btn-outline-dark btn-sm">&lt; vorherige Woche</button>
+        <!-- <div id="anzeige" class="pt-4 d-table mx-auto">
+            <button id="previous" type="button" class="btn btn-dark btn-sm">&lt; zurück</button>
             <label class="px-5">Woche <span id="week"></span></label>
-            <button id="next" type="button" class="btn btn-outline-dark btn-sm">nächste Woche &gt;</button>
+            <button id="next" type="button" class="btn btn-dark btn-sm">vor &gt;</button>
+        </div> -->
+
+        <div class="btn-group mb-2 pt-4 d-table mx-auto">
+            <button type="button" class="btn btn-light" id="previous" style="background-color: #e9ecef;
+                border: 1px solid #ced4da;">&lt;</button>
+            <button type="button" class="btn btn-light" style="background-color: #e9ecef;
+                border: 1px solid #ced4da;">Woche <span id="week"></span></button>
+            <button type="button" class="btn btn-light" id="next" style="background-color: #e9ecef;
+                border: 1px solid #ced4da;">&gt;</button>
         </div>
+
+        <!-- <div class="bs-example mt-5">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;"></div>
+            </div>
+        </div> -->
 
 
         <!-- <div class="mt-5 spinner-grow d-table mx-auto" role="status">
@@ -60,7 +75,7 @@
 
         <div class="table-responsive mt-5">
             <table class="table">
-                <thead class="thead-dark">
+                <thead class="thead-light">
                     <tr>
                         <th scope="col">Datum</th>
                         <th scope="col">Wochentag</th>
@@ -186,16 +201,14 @@
 
     function getTableContent(tafeln) {
         return tafeln.map((tafel) => {
-            const table_th = `<th scope='row'>${formatDate(tafel.tafel_datum)}</th>`;
-            const table_td = {
-                wochentag: `<td>${formatWeekday(tafel.tafel_wochentag)}</td>`,
-                von: `<td>${tafel.tafel_von}</td>`,
-                bis: `<td>${tafel.tafel_bis}</td>`,
-                lehrer: `<td>${tafel.tafel_lehrer}</td>`,
-                fach: `<td>${tafel.tafel_fach}</td>`,
-                raum: `<td>${tafel.tafel_raum}</td>`
-            }
-            return `<tr>${table_th}${table_td.wochentag + table_td.von + table_td.bis + table_td.lehrer + table_td.fach + table_td.raum}</tr>`;
+            const datum = `<td>${formatDate(tafel.tafel_datum)}</td>`;
+            const wochentag = `<td>${formatWeekday(tafel.tafel_wochentag)}</td>`;
+            const von = `<td>${tafel.tafel_von}</td>`;
+            const bis = `<td>${tafel.tafel_bis}</td>`;
+            const lehrer = `<td>${tafel.tafel_lehrer}</td>`;
+            const fach = `<td>${tafel.tafel_fach}</td>`;
+            const raum = `<td>${tafel.tafel_raum}</td>`;
+            return `<tr>${datum + wochentag + von + bis + lehrer + fach + raum}</tr>`;
         });
     }
 
