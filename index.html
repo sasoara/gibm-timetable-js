@@ -62,11 +62,12 @@
             </div>
         </div>
 
-        <!-- <div class="bs-example mt-5">
+        <div class="bs-example mt-5" id="progressbar" hidden>
             <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;"></div>
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;">Loading . . .
+                </div>
             </div>
-        </div> -->
+        </div>
 
 
         <!-- <div class="mt-5 spinner-grow d-table mx-auto" role="status">
@@ -176,6 +177,7 @@
     }
 
     function handleSelectedJob() {
+        $('#progressbar').removeAttr('hidden');
         handleElementDisplaying(false);
         const job = $('#berufsgruppenAuswahl >> option:selected');
         getKlassen(job.val()).then((klassen) => {
@@ -184,6 +186,7 @@
             options.forEach((option) => {
                 $('#klassenAuswahl').append(option);
             });
+            $('#progressbar').attr('hidden', true);
         });
     }
 
