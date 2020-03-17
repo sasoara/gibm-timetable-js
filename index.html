@@ -95,6 +95,12 @@
     </div>
 </body>
 <script>
+
+    // zeigt Fehlermeldungen
+    function showError(message) {
+        $('div.alert').removeAttr('hidden').text(message);
+    }
+
     // holt bzw. returned die Daten der Schulwebseite
     function getBerufe() {
         return $.getJSON(`http://sandbox.gibm.ch/berufe.php`)
@@ -104,7 +110,7 @@
             })
 
             .fail(function () {
-                return $('div.alert').removeAttr('hidden').text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+                showError("Berufe können nicht geladen werden. Überprüfe den Link.");
             });
     }
 
@@ -116,7 +122,7 @@
             })
 
             .fail(function () {
-                return $('div.alert').removeAttr('hidden').text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+                showError("Klassen können nicht geladen werden. Überprüfe den Link.");
             });
     }
 
@@ -148,7 +154,7 @@
             })
 
             .fail(function () {
-                return $('div.alert').removeAttr('hidden').text("Leere Liste wegen Netzwerkfehler. Überprüfe den Link.");
+                showError("Stundenplandaten können nicht geladen werden. Überprüfe den Link.");
             });
     }
 
