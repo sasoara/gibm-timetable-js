@@ -51,18 +51,16 @@
             <label class="px-5">Woche <span id="week"></span></label>
             <button id="next" type="button" class="btn btn-dark btn-sm">vor &gt;</button>
         </div> -->
-        <div id="wochenanzeige" hidden>
-            <div class="btn-group mb-2 pt-4 d-table mx-auto">
-                <button type=" button" class="btn btn-light" id="previous" style="background-color: #e9ecef;
+        <div id="wochenanzeige" class="btn-group mb-2 pt-4 mx-auto" style="display: none;">
+            <button type=" button" class="btn btn-light" id="previous" style="background-color: #e9ecef;
                 border: 1px solid #ced4da;">«</button>
-                <button type="button" class="btn btn-light" style="background-color: #ffffff;
+            <button type="button" class="btn btn-light" style="background-color: #ffffff;
                 border: 1px solid #ced4da;">Woche <span id="week"></span></button>
-                <button type="button" class="btn btn-light" id="next" style="background-color: #e9ecef;
+            <button type="button" class="btn btn-light" id="next" style="background-color: #e9ecef;
                 border: 1px solid #ced4da;">»</button>
-            </div>
         </div>
 
-        <div class="bs-example mt-5" id="progressbar" hidden>
+        <div class="bs-example mt-5" id="progressbar" style="display: none;">
             <div class="progress">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;">Loading . . .
                 </div>
@@ -75,7 +73,7 @@
         </div> -->
 
 
-        <div class="table-responsive mt-5" id="tafel" hidden>
+        <div class="table-responsive mt-5" id="tafel" style="display: none;">
             <table class="table">
                 <thead class="thead-light">
                     <tr>
@@ -183,7 +181,7 @@
     }
 
     function handleSelectedJob() {
-        $('#progressbar').removeAttr('hidden');
+        $('#progressbar').show();
         handleElementDisplaying(false);
         const job = $('#berufsgruppenAuswahl >> option:selected');
         getKlassen(job.val()).then((klassen) => {
@@ -192,7 +190,7 @@
             options.forEach((option) => {
                 $('#klassenAuswahl').append(option);
             });
-            $('#progressbar').attr('hidden', true);
+            $('#progressbar').hide();
         });
     }
 
@@ -224,6 +222,7 @@
     }
 
     function fillTimeTable(handleWeekFunction) {
+        $('#progressbar').show();
         const selectedClass = $('#klassenAuswahl > option:selected');
         const lableWeek = $('#week');
         const anotherWeek = handleWeekFunction ? handleWeekFunction(lableWeek.text()) : getCurrentWeekNumber_Year();
@@ -233,8 +232,9 @@
             table.html('');
             const tableContent = getTableContent(tafeln);
             table.append(tableContent);
+            $('#progressbar').hide();
+            handleElementDisplaying(true);
         });
-        handleElementDisplaying(true);
     }
 
     function handlePreviousWeekButton() {
@@ -249,11 +249,13 @@
         const tafel = $('#tafel');
         const wochenanzeige = $('#wochenanzeige');
         if (visible) {
-            tafel.removeAttr('hidden');
-            wochenanzeige.removeAttr('hidden');
+            tafel.show();
+            wochenanzeige.addClass('d-table');
+            wochenanzeige.show();
         } else {
-            tafel.attr('hidden', true);
-            wochenanzeige.attr('hidden', true);
+            tafel.hide();
+            wochenanzeige.removeClass('d-table');
+            wochenanzeige.hide();
         }
     }
 
