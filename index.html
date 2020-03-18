@@ -45,13 +45,6 @@
             </div>
         </form>
 
-
-        <!-- <div id="anzeige" class="pt-4 d-table mx-auto">
-            <button id="previous" type="button" class="btn btn-dark btn-sm">&lt; zurück</button>
-            <label class="px-5">Woche <span id="week"></span></label>
-            <button id="next" type="button" class="btn btn-dark btn-sm">vor &gt;</button>
-        </div> -->
-
         <div id="wochenanzeige" class="btn-group mb-2 pt-4 mx-auto" style="display: none;">
             <button type=" button" class="btn btn-light" id="previous" style="background-color: #e9ecef;
                 border: 1px solid #ced4da;">«</button>
@@ -63,32 +56,13 @@
 
         <div class="bs-example mt-5" id="progressbar" style="display: none;">
             <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;">Loading . . .
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;">Ladet . . .
                 </div>
             </div>
         </div>
 
-
-        <!-- <div class="mt-5 spinner-grow d-table mx-auto" role="status">
-            <span class="sr-only">Loading...</span>
-        </div> -->
-
-
         <div class="table-responsive mt-5" id="tafel" style="display: none;">
-            <table class="table">
-                <thead class="thead-light">
-                    <tr>
-                        <th scope="col">Datum</th>
-                        <th scope="col">Wochentag</th>
-                        <th scope="col">Von</th>
-                        <th scope="col">Bis</th>
-                        <th scope="col">Lehrer</th>
-                        <th scope="col">Fach</th>
-                        <th scope="col">Raum</th>
-                    </tr>
-                </thead>
-                <tbody id="time-table">
-                </tbody>
+            <table class="table" id="table">
             </table>
         </div>
     </div>
@@ -226,11 +200,29 @@
         });
     }
 
+    function composeTable(tafeln) {
+        return `<thead class="thead-light">${getTableHeadContent()}</thead><tbody>${getTableContent(tafeln)}</tbody>`;
+    }
+
+    function getTableHeadContent() {
+        const head =
+            `<tr>
+            <th>Datum</th>
+            <th>Wochentag</th>
+            <th>Von</th>
+            <th>Bis</th>
+            <th>Lehrer</th>
+            <th>Fach</th>
+            <th>Raum</th>
+            </tr>`;
+        return head;
+    }
+
     function fillTimeTable(handleWeekFunction) {
-        const table = $('#time-table');
+        const table = $('#table');
         table.html('');
         window.setTimeout(() => {
-            const timeTableEmpty = $('#time-table').children().length;
+            const timeTableEmpty = table.children().length;
             if (!timeTableEmpty) {
                 $('#progressbar').fadeIn(300);
             }
@@ -240,18 +232,16 @@
         const anotherWeek = handleWeekFunction ? handleWeekFunction(lableWeek.text()) : getCurrentWeekNumber_Year();
         lableWeek.text(anotherWeek);
         getTafel(selectedClass.val(), anotherWeek).then((tafeln) => {
-            const table = $('#time-table');
-            table.html('');
             const tafelEmpty = tafeln.length;
-            const tableContent = !tafelEmpty ? getHolidayContent() : getTableContent(tafeln);
-            table.append(tableContent);
+            const tableContent = !tafelEmpty ? getHolidayContent() : composeTable(tafeln);
+            table.html(tableContent);
             $('#progressbar').hide();
             handleElementDisplaying(true);
         });
     }
 
     function getHolidayContent() {
-        return `<tr><td>FERIEN</td></tr>`;
+        return `<tbody><tr><td class="text-center">FERIEN</td></tr></tbody>`;
     }
 
     function handlePreviousWeekButton() {
@@ -303,6 +293,5 @@
         $('#next').on('click', handleNextWeekButton);
     });
 </script>
-
 
 </html>
