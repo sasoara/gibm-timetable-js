@@ -51,6 +51,7 @@
             <label class="px-5">Woche <span id="week"></span></label>
             <button id="next" type="button" class="btn btn-dark btn-sm">vor &gt;</button>
         </div> -->
+
         <div id="wochenanzeige" class="btn-group mb-2 pt-4 mx-auto" style="display: none;">
             <button type=" button" class="btn btn-light" id="previous" style="background-color: #e9ecef;
                 border: 1px solid #ced4da;">«</button>
@@ -93,7 +94,6 @@
     </div>
 </body>
 <script>
-
     // zeigt Fehlermeldungen
     function showError(message) {
         $('div.alert').removeAttr('hidden').text(message);
@@ -181,7 +181,12 @@
     }
 
     function handleSelectedJob() {
-        $('#progressbar').show();
+        window.setTimeout(() => {
+            const classesEmpty = $('#klassenAuswahl').children().length;
+            if (!classesEmpty) {
+                $('#progressbar').fadeIn(300);
+            }
+        }, 500);
         handleElementDisplaying(false);
         const job = $('#berufsgruppenAuswahl >> option:selected');
         getKlassen(job.val()).then((klassen) => {
@@ -222,7 +227,14 @@
     }
 
     function fillTimeTable(handleWeekFunction) {
-        $('#progressbar').show();
+        const table = $('#time-table');
+        table.html('');
+        window.setTimeout(() => {
+            const timeTableEmpty = $('#time-table').children().length;
+            if (!timeTableEmpty) {
+                $('#progressbar').fadeIn(300);
+            }
+        }, 300);
         const selectedClass = $('#klassenAuswahl > option:selected');
         const lableWeek = $('#week');
         const anotherWeek = handleWeekFunction ? handleWeekFunction(lableWeek.text()) : getCurrentWeekNumber_Year();
@@ -230,11 +242,16 @@
         getTafel(selectedClass.val(), anotherWeek).then((tafeln) => {
             const table = $('#time-table');
             table.html('');
-            const tableContent = getTableContent(tafeln);
+            const tafelEmpty = tafeln.length;
+            const tableContent = !tafelEmpty ? getHolidayContent() : getTableContent(tafeln);
             table.append(tableContent);
             $('#progressbar').hide();
             handleElementDisplaying(true);
         });
+    }
+
+    function getHolidayContent() {
+        return `<tr><td>FERIEN</td></tr>`;
     }
 
     function handlePreviousWeekButton() {
@@ -257,6 +274,12 @@
             wochenanzeige.removeClass('d-table');
             wochenanzeige.hide();
         }
+    }
+
+    function showProgressBar() {
+        window.setTimeout(() => {
+            $('#progressbar').fadeIn(300);
+        }, 1000);
     }
 
     // jQuery check, ob der DOM geladen ist.
