@@ -74,12 +74,141 @@
             <th>Raum</th>
             </tr>`;
 
-    // zeigt Fehlermeldungen
+    /*
+        Nimmt als Parameter eine Fehlermeldung und
+        gibt diese aus.
+    */
     function showError(message) {
         $('div.alert').show().text(message);
     }
 
-    // holt bzw. returned die Daten der Schulwebseite
+    /*
+        Bekommt als Parameter die Berufe und konstruiert aus
+        den Anfangsbuchstaben alphabetisch sortierte Gruppen.
+    */
+    function prepareOptionGroupsForBerufsgruppe(jobs) {
+        const firstLetters = $.unique(jobs.map((job) => job.beruf_name[0]));
+        return firstLetters.map((letter) => `<optgroup label=${letter}></optgroup>`);
+    }
+
+    /*
+        Bekommt als Parameter die Berufe und gibt die
+        Berufsbezeichnung und den HTML-Tag dazu aus.
+    */
+    function prepareOptionsBerufe(jobs) {
+        return jobs.map((job) => {
+            return {
+                name: job.beruf_name,
+                tag: `<option value=${job.beruf_id}>${job.beruf_name}</option>`
+            }
+        });
+    }
+
+    /*
+        Bekommt als Parameter die Klassen und konstruiert mit
+        diesen Daten die HTML-Option-Tags.
+    */
+    function prepareOptionsKlassen(klassen) {
+        return klassen.map((klasse) => `<option value=${klasse.klasse_id}>${klasse.klasse_name}</option>`);
+    }
+
+    /*
+        Gibt die aktuelle Wochennummer mit dem Jahr im
+        Format 'ww-yyyy' zurück.
+    */
+    function getCurrentWeekNumber_Year() {
+        const today = new Date();
+        const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+        const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
+        const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        return `${weekNumber}-${today.getFullYear()}`;
+    }
+
+    /*
+        Bekommt als Parameter die aktuelle Woche und das Jahr im Format 'ww-yyyy'
+        und gibt die vorherige Woche im gleichen Fromat zurück.
+    */
+    function previousWeek_Year(current) {
+        const splitCurrent = current.split('-');
+        return `${splitCurrent[0] - 1}-${splitCurrent[1]}`;
+    }
+
+    /*
+        Bekommt als Parameter die aktuelle Woche und das Jahr im Format 'ww-yyyy'
+        und gibt die nächste Woche im gleichen Fromat zurück.
+    */
+    function nextWeek_Year(current) {
+        const splitCurrent = current.split('-');
+        return `${1 + parseInt(splitCurrent[0])}-${splitCurrent[1]}`;
+    }
+
+    /*
+        Bekommt als Parameter das aktuelle Datum im Format 'yyyy-mm-dd'
+        und gibt das Datum im Fromat 'dd.mm.yyy' zurück.
+    */
+    function formatDate(dateString) {
+        const splitDate = dateString.split('-');
+        return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`;
+    }
+
+    /*
+        Bekommt als Parameter den Tag als Nummer (0-6)->(So-Sa)
+        welche ihn als Wort zurück gibt.
+    */
+    function formatWeekday(dayAsNumber) {
+        const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+        return days[dayAsNumber];
+    }
+
+    /*
+        Bekommt als Parameter die Stundenplandaten, welche diese
+        einzeln zu HTML-Table-Tags schreibt und dann zusammenführt.
+    */
+    function getTableContent(tafeln) {
+        return tafeln.map((tafel) => {
+            const datum = `<td>${formatDate(tafel.tafel_datum)}</td>`;
+            const wochentag = `<td>${formatWeekday(tafel.tafel_wochentag)}</td>`;
+            const von = `<td>${tafel.tafel_von}</td>`;
+            const bis = `<td>${tafel.tafel_bis}</td>`;
+            const lehrer = `<td>${tafel.tafel_lehrer}</td>`;
+            const fach = `<td>${tafel.tafel_fach}</td>`;
+            const raum = `<td>${tafel.tafel_raum}</td>`;
+            return `<tr>${datum + wochentag + von + bis + lehrer + fach + raum}</tr>`;
+        });
+    }
+
+    /*
+        Gibt in der Tabelle die Ferienmitteilung aus.
+    */
+    function getHolidayContent() {
+        return `<tbody><tr><td class="text-center">FERIEN</td></tr></tbody>`;
+    }
+
+    /*
+        Bekommt als Parameter einen Bool'schen Wert übergeben
+        welcher dann entweder die Wochenanzeige & die Tabelle verschwinden
+        oder anzeigen lässt.
+    */
+    function handleElementDisplaying(visible) {
+        const table = $('#table');
+        const wochenanzeige = $('#wochenanzeige');
+        if (visible) {
+            table.addClass('d-table');
+            table.show();
+            wochenanzeige.addClass('d-table');
+            wochenanzeige.show();
+        } else {
+            table.removeClass('d-table');
+            table.hide();
+            wochenanzeige.removeClass('d-table');
+            wochenanzeige.hide();
+        }
+    }
+
+    /*
+        Gibt die Daten(Berufe) der Schulwebseite zurück wenn das Laden erfolgreich war,
+        ansonsten wird eine Fehlermeldung ausgegeben.
+    */
     function getBerufe() {
         return $.getJSON(`http://sandbox.gibm.ch/berufe.php`)
 
@@ -92,6 +221,11 @@
             });
     }
 
+    /*
+        Bekommt als Parameter die Berufid (default 0) und
+        gibt die Daten(Klassen) der Schulwebseite zurück wenn das Laden erfolgreich war,
+        ansonsten wird eine Fehlermeldung ausgegeben.
+    */
     function getKlassen(beruf_id = 0) {
         return $.getJSON(`http://sandbox.gibm.ch/klassen.php?beruf_id=${beruf_id}`)
 
@@ -104,24 +238,11 @@
             });
     }
 
-    function getCurrentWeekNumber_Year() {
-        const today = new Date();
-        const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
-        const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
-        const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-        return `${weekNumber}-${today.getFullYear()}`;
-    }
-
-    function previousWeek_Year(current) {
-        const splitCurrent = current.split('-');
-        return `${splitCurrent[0] - 1}-${splitCurrent[1]}`;
-    }
-
-    function nextWeek_Year(current) {
-        const splitCurrent = current.split('-');
-        return `${1 + parseInt(splitCurrent[0])}-${splitCurrent[1]}`;
-    }
-
+    /*
+        Bekommt als Parameter die Klassenid (default 0) und die Woche im Format 'ww-yyyy'
+        und gibt die Daten(Stundenplan) der Schulwebseite zurück wenn das Laden erfolgreich war,
+        ansonsten wird eine Fehlermeldung ausgegeben.
+    */
     function getTafel(klasse_id = 0, woche) {
         const url = woche ? `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}&woche=${woche}` :
             `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}`;
@@ -136,24 +257,9 @@
             });
     }
 
-    function prepareOptionGroupsForBerufsgruppe(jobs) {
-        const firstLetters = $.unique(jobs.map((job) => job.beruf_name[0]));
-        return firstLetters.map((letter) => `<optgroup label=${letter}></optgroup>`);
-    }
-
-    function prepareOptionsBerufe(jobs) {
-        return jobs.map((job) => {
-            return {
-                name: job.beruf_name,
-                tag: `<option value=${job.beruf_id}>${job.beruf_name}</option>`
-            }
-        });
-    }
-
-    function prepareOptionsKlassen(klassen) {
-        return klassen.map((klasse) => `<option value=${klasse.klasse_id}>${klasse.klasse_name}</option>`);
-    }
-
+    /*
+        Behandelt die Anzeige der Klassen wenn ein Beruf ausgewählt worden ist.
+    */
     function handleSelectedJob() {
         $('#klassenAuswahl').html('');
         window.setTimeout(() => {
@@ -174,37 +280,41 @@
         });
     }
 
-    function formatDate(dateString) {
-        const splitDate = dateString.split('-');
-        return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`;
-    }
-
-    function formatWeekday(dayAsNumber) {
-        const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
-        return days[dayAsNumber];
-    }
-
+    /*
+        Führt die befüllende Tabellen-Funktion aus, wenn
+        eine Klasse ausgewählt worden ist.
+    */
     function handleSelectedClass() {
         fillTimeTable();
     }
 
-    function getTableContent(tafeln) {
-        return tafeln.map((tafel) => {
-            const datum = `<td>${formatDate(tafel.tafel_datum)}</td>`;
-            const wochentag = `<td>${formatWeekday(tafel.tafel_wochentag)}</td>`;
-            const von = `<td>${tafel.tafel_von}</td>`;
-            const bis = `<td>${tafel.tafel_bis}</td>`;
-            const lehrer = `<td>${tafel.tafel_lehrer}</td>`;
-            const fach = `<td>${tafel.tafel_fach}</td>`;
-            const raum = `<td>${tafel.tafel_raum}</td>`;
-            return `<tr>${datum + wochentag + von + bis + lehrer + fach + raum}</tr>`;
-        });
-    }
-
+    /*
+        Führt den Tabellen- Kopf und Körper zusammen.
+    */
     function composeTable(tafeln) {
         return `<thead class="thead-light">${tableHeadContent}</thead><tbody>${getTableContent(tafeln)}</tbody>`;
     }
 
+    /*
+        Übergibt der befüllenden Tabellen-Funktion die Funktion mit, die
+        die vorherige Woche ausgibt.
+    */
+    function handlePreviousWeekButton() {
+        fillTimeTable(previousWeek_Year);
+    }
+
+    /*
+        Übergibt der befüllenden Tabellen-Funktion die Funktion mit, die
+        die nächste Woche ausgibt.
+    */
+    function handleNextWeekButton() {
+        fillTimeTable(nextWeek_Year);
+    }
+
+    /*
+        Bekommt als Parameter eine Funktion mit, die die anzuzeigende Woche behandelt
+        und befüllt den Stundenplan.
+    */
     function fillTimeTable(handleWeekFunction) {
         const table = $('#table');
         table.removeClass('d-table');
@@ -228,35 +338,9 @@
         });
     }
 
-    function getHolidayContent() {
-        return `<tbody><tr><td class="text-center">FERIEN</td></tr></tbody>`;
-    }
-
-    function handlePreviousWeekButton() {
-        fillTimeTable(previousWeek_Year);
-    }
-
-    function handleNextWeekButton() {
-        fillTimeTable(nextWeek_Year);
-    }
-
-    function handleElementDisplaying(visible) {
-        const table = $('#table');
-        const wochenanzeige = $('#wochenanzeige');
-        if (visible) {
-            table.addClass('d-table');
-            table.show();
-            wochenanzeige.addClass('d-table');
-            wochenanzeige.show();
-        } else {
-            table.removeClass('d-table');
-            table.hide();
-            wochenanzeige.removeClass('d-table');
-            wochenanzeige.hide();
-        }
-    }
-
-    // jQuery check, ob der DOM geladen ist.
+    /*
+        Prüft mit jQuery, ob der DOM geladen ist.
+    */
     $(function () {
 
         getBerufe().then((jobs) => {
