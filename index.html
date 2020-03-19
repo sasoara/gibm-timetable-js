@@ -54,20 +54,26 @@
                 border: 1px solid #ced4da;">»</button>
         </div>
 
-        <div class="bs-example mt-5" id="progressbar" style="display: none;">
-            <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;">Ladet . . .
-                </div>
+        <div class="progress bs-example mt-5" id="progressbar" style="display: none;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;">Ladet . . .
             </div>
         </div>
 
-        <div class="table-responsive mt-5" id="tafel" style="display: none;">
-            <table class="table" id="table">
-            </table>
-        </div>
+        <table class="table table-responsive mt-5 d-table" id="table" style="display: none;">
+        </table>
     </div>
 </body>
 <script>
+    const tableHeadContent = `<tr>
+            <th>Datum</th>
+            <th>Wochentag</th>
+            <th>Von</th>
+            <th>Bis</th>
+            <th>Lehrer</th>
+            <th>Fach</th>
+            <th>Raum</th>
+            </tr>`;
+
     // zeigt Fehlermeldungen
     function showError(message) {
         $('div.alert').removeAttr('hidden').text(message);
@@ -136,22 +142,16 @@
     }
 
     function prepareOptionsBerufe(jobs) {
-        const selectOptions = jobs.map((job) => {
-            const objOptions = {
+        return jobs.map((job) => {
+            return {
                 name: job.beruf_name,
                 tag: `<option value=${job.beruf_id}>${job.beruf_name}</option>`
             }
-            return objOptions;
         });
-        return selectOptions;
     }
 
     function prepareOptionsKlassen(klassen) {
-        const selectOptions = klassen.map((klasse) => {
-            const objOptions = `<option value=${klasse.klasse_id}>${klasse.klasse_name}</option>`
-            return objOptions;
-        });
-        return selectOptions;
+        return klassen.map((klasse) => `<option value=${klasse.klasse_id}>${klasse.klasse_name}</option>`);
     }
 
     function handleSelectedJob() {
@@ -160,7 +160,7 @@
             if (!classesEmpty) {
                 $('#progressbar').fadeIn(300);
             }
-        }, 500);
+        }, 300);
         handleElementDisplaying(false);
         const job = $('#berufsgruppenAuswahl >> option:selected');
         getKlassen(job.val()).then((klassen) => {
@@ -201,21 +201,7 @@
     }
 
     function composeTable(tafeln) {
-        return `<thead class="thead-light">${getTableHeadContent()}</thead><tbody>${getTableContent(tafeln)}</tbody>`;
-    }
-
-    function getTableHeadContent() {
-        const head =
-            `<tr>
-            <th>Datum</th>
-            <th>Wochentag</th>
-            <th>Von</th>
-            <th>Bis</th>
-            <th>Lehrer</th>
-            <th>Fach</th>
-            <th>Raum</th>
-            </tr>`;
-        return head;
+        return `<thead class="thead-light">${tableHeadContent}</thead><tbody>${getTableContent(tafeln)}</tbody>`;
     }
 
     function fillTimeTable(handleWeekFunction) {
@@ -253,23 +239,19 @@
     }
 
     function handleElementDisplaying(visible) {
-        const tafel = $('#tafel');
+        const table = $('#table');
         const wochenanzeige = $('#wochenanzeige');
         if (visible) {
-            tafel.show();
+            table.addClass('d-table');
+            table.show();
             wochenanzeige.addClass('d-table');
             wochenanzeige.show();
         } else {
-            tafel.hide();
+            table.removeClass('d-table');
+            table.hide();
             wochenanzeige.removeClass('d-table');
             wochenanzeige.hide();
         }
-    }
-
-    function showProgressBar() {
-        window.setTimeout(() => {
-            $('#progressbar').fadeIn(300);
-        }, 1000);
     }
 
     // jQuery check, ob der DOM geladen ist.
