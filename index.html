@@ -24,7 +24,7 @@
     </p>
 
     <div class="container mt-5">
-        <div id="message" class="alert alert-warning" hidden></div>
+        <div id="message" class="alert alert-warning" style="display: none;"></div>
         <form action="" method="GET">
             <h3>Berufsgruppe</h3>
             <div class="input-group mb-3">
@@ -76,7 +76,7 @@
 
     // zeigt Fehlermeldungen
     function showError(message) {
-        $('div.alert').removeAttr('hidden').text(message);
+        $('div.alert').show().text(message);
     }
 
     // holt bzw. returned die Daten der Schulwebseite
@@ -155,6 +155,7 @@
     }
 
     function handleSelectedJob() {
+        $('#klassenAuswahl').html('');
         window.setTimeout(() => {
             const classesEmpty = $('#klassenAuswahl').children().length;
             if (!classesEmpty) {
@@ -206,10 +207,11 @@
 
     function fillTimeTable(handleWeekFunction) {
         const table = $('#table');
-        table.html('');
+        table.removeClass('d-table');
+        table.hide();
         window.setTimeout(() => {
-            const timeTableEmpty = table.children().length;
-            if (!timeTableEmpty) {
+            const timeTableVisible = table.filter(':visible').length;
+            if (!timeTableVisible) {
                 $('#progressbar').fadeIn(300);
             }
         }, 300);
