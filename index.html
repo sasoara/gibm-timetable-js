@@ -64,7 +64,10 @@
     </div>
 </body>
 <script>
-    const tableHeadContent = `<tr>
+    const serverUrl = 'http://sandbox.gibm.ch';
+
+    const tableHeadContent =
+        `<tr>
             <th>Datum</th>
             <th>Wochentag</th>
             <th>Von</th>
@@ -72,14 +75,14 @@
             <th>Lehrer</th>
             <th>Fach</th>
             <th>Raum</th>
-            </tr>`;
+        </tr>`;
 
     /*
         Nimmt als Parameter eine Fehlermeldung und
         gibt diese aus.
     */
     function showError(message) {
-        $('div.alert').show().text(message);
+        $('#message').show().text(message);
     }
 
     /*
@@ -210,15 +213,11 @@
         ansonsten wird eine Fehlermeldung ausgegeben.
     */
     function getBerufe() {
-        return $.getJSON(`http://sandbox.gibm.ch/berufe.php`)
+        return $.getJSON(`${serverUrl}/berufe.php`)
 
-            .done(function (jobs) {
-                return jobs;
-            })
+            .done((jobs) => jobs)
 
-            .fail(function () {
-                showError("Berufe können nicht geladen werden. Überprüfe den Link.");
-            });
+            .fail(() => showError("Berufe können nicht geladen werden. Überprüfe den Link."));
     }
 
     /*
@@ -227,15 +226,11 @@
         ansonsten wird eine Fehlermeldung ausgegeben.
     */
     function getKlassen(beruf_id = 0) {
-        return $.getJSON(`http://sandbox.gibm.ch/klassen.php?beruf_id=${beruf_id}`)
+        return $.getJSON(`${serverUrl}/klassen.php?beruf_id=${beruf_id}`)
 
-            .done(function (schoolClasses) {
-                return schoolClasses;
-            })
+            .done((schoolClasses) => schoolClasses)
 
-            .fail(function () {
-                showError("Klassen können nicht geladen werden. Überprüfe den Link.");
-            });
+            .fail(() => showError("Klassen können nicht geladen werden. Überprüfe den Link."));
     }
 
     /*
@@ -244,17 +239,13 @@
         ansonsten wird eine Fehlermeldung ausgegeben.
     */
     function getTafel(klasse_id = 0, woche) {
-        const url = woche ? `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}&woche=${woche}` :
-            `http://sandbox.gibm.ch/tafel.php?klasse_id=${klasse_id}`;
+        const url = woche ? `${serverUrl}/tafel.php?klasse_id=${klasse_id}&woche=${woche}` :
+            `${serverUrl}/tafel.php?klasse_id=${klasse_id}`;
         return $.getJSON(url)
 
-            .done(function (timeTable) {
-                return timeTable;
-            })
+            .done((timeTable) => timeTable)
 
-            .fail(function () {
-                showError("Stundenplandaten können nicht geladen werden. Überprüfe den Link.");
-            });
+            .fail(() => showError("Stundenplandaten können nicht geladen werden. Überprüfe den Link."));
     }
 
     /*
