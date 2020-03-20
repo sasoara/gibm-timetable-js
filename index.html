@@ -165,19 +165,20 @@
 
     /*
         Bekommt als Parameter die Stundenplandaten, welche diese
-        einzeln zu HTML-Table-Tags schreibt und dann zusammenführt.
+        zu HTML-Table-Tags formt und ausgibt.
     */
     function getTableContent(tafeln) {
-        return tafeln.map((tafel) => {
-            const datum = `<td>${formatDate(tafel.tafel_datum)}</td>`;
-            const wochentag = `<td>${formatWeekday(tafel.tafel_wochentag)}</td>`;
-            const von = `<td>${tafel.tafel_von}</td>`;
-            const bis = `<td>${tafel.tafel_bis}</td>`;
-            const lehrer = `<td>${tafel.tafel_lehrer}</td>`;
-            const fach = `<td>${tafel.tafel_fach}</td>`;
-            const raum = `<td>${tafel.tafel_raum}</td>`;
-            return `<tr>${datum + wochentag + von + bis + lehrer + fach + raum}</tr>`;
-        });
+        return tafeln.map((tafel) =>
+            `<tr>
+                <td>${formatDate(tafel.tafel_datum)}</td>
+                <td>${formatWeekday(tafel.tafel_wochentag)}</td>
+                <td>${tafel.tafel_von}</td>
+                <td>${tafel.tafel_bis}</td>
+                <td>${tafel.tafel_lehrer}</td>
+                <td>${tafel.tafel_fach}</td>
+                <td>${tafel.tafel_raum}</td>
+            </tr>`
+        );
     }
 
     /*
