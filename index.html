@@ -281,10 +281,11 @@
     }
 
     /*
-        Führt die befüllende Tabellen-Funktion aus, wenn
-        eine Klasse ausgewählt worden ist.
+        Entfernt das erste <option> Element "Bitte Klasse wählen" und führt
+        die befüllende Tabellen-Funktion aus, wenn eine Klasse ausgewählt worden ist.
     */
     function handleSelectedClass() {
+        $('#klassenAuswahl option').first().hide();
         fillTimeTable();
     }
 
