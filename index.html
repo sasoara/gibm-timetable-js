@@ -280,7 +280,7 @@
     */
     function handleSelectedClass() {
         $('#klassenAuswahl option').first().hide();
-        fillTimeTable();
+        fillTimeTable(getCurrentWeekNumber_Year);
     }
 
     /*
@@ -322,7 +322,7 @@
         const selectedClass = $('#klassenAuswahl > option:selected');
         const lableWeek = $('#week');
         const s_progressBar = $('#progressbar');
-        const anotherWeek = handleWeekFunction ? handleWeekFunction(lableWeek.text()) : getCurrentWeekNumber_Year();
+        const anotherWeek = handleWeekFunction(lableWeek.text());
         const table = $('#table');
         table.removeClass('d-table');
         table.hide();
