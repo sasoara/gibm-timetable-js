@@ -253,22 +253,24 @@
         Behandelt die Anzeige der Klassen wenn ein Beruf ausgewählt worden ist.
     */
     function handleSelectedJob() {
-        $('#klassenAuswahl').html('');
+        const s_klassenAuswahl = $('#klassenAuswahl');
+        const s_progressBar = $('#progressbar');
+        s_klassenAuswahl.html('');
         window.setTimeout(() => {
-            const classesEmpty = $('#klassenAuswahl').children().length;
+            const classesEmpty = s_klassenAuswahl.children().length;
             if (!classesEmpty) {
-                $('#progressbar').fadeIn(300);
+                s_progressBar.fadeIn(300);
             }
         }, 300);
         handleElementDisplaying(false);
         const job = $('#berufsgruppenAuswahl >> option:selected');
         getKlassen(job.val()).then((klassen) => {
             const options = prepareOptionsKlassen(klassen);
-            $('#klassenAuswahl').html('<option selected>Bitte Klasse wählen</option>');
+            s_klassenAuswahl.html('<option selected>Bitte Klasse wählen</option>');
             options.forEach((option) => {
-                $('#klassenAuswahl').append(option);
+                s_klassenAuswahl.append(option);
             });
-            $('#progressbar').hide();
+            s_progressBar.hide();
         });
     }
 
@@ -317,24 +319,25 @@
         und befüllt den Stundenplan.
     */
     function fillTimeTable(handleWeekFunction) {
+        const selectedClass = $('#klassenAuswahl > option:selected');
+        const lableWeek = $('#week');
+        const s_progressBar = $('#progressbar');
+        const anotherWeek = handleWeekFunction ? handleWeekFunction(lableWeek.text()) : getCurrentWeekNumber_Year();
         const table = $('#table');
         table.removeClass('d-table');
         table.hide();
+        lableWeek.text(anotherWeek);
         window.setTimeout(() => {
             const timeTableVisible = table.filter(':visible').length;
             if (!timeTableVisible) {
-                $('#progressbar').fadeIn(300);
+                s_progressBar.fadeIn(300);
             }
         }, 300);
-        const selectedClass = $('#klassenAuswahl > option:selected');
-        const lableWeek = $('#week');
-        const anotherWeek = handleWeekFunction ? handleWeekFunction(lableWeek.text()) : getCurrentWeekNumber_Year();
-        lableWeek.text(anotherWeek);
         getTafel(selectedClass.val(), anotherWeek).then((tafeln) => {
             const tafelEmpty = tafeln.length;
             const tableContent = !tafelEmpty ? getHolidayContent() : composeTable(tafeln);
             table.html(tableContent);
-            $('#progressbar').hide();
+            s_progressBar.hide();
             handleElementDisplaying(true);
         });
     }
