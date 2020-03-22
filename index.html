@@ -48,7 +48,7 @@
         <div id="wochenanzeige" class="btn-group mb-2 pt-4 mx-auto" style="display: none;">
             <button type=" button" class="btn btn-light" id="previous" style="background-color: #e9ecef;
                 border: 1px solid #ced4da;">«</button>
-            <button type="button" class="btn btn-light" style="background-color: #ffffff;
+            <button type="button" class="btn btn-light" id="current" style="background-color: #ffffff;
                 border: 1px solid #ced4da;">Woche <span id="week"></span></button>
             <button type="button" class="btn btn-light" id="next" style="background-color: #e9ecef;
                 border: 1px solid #ced4da;">»</button>
@@ -305,6 +305,14 @@
     }
 
     /*
+        Übergibt der befüllenden Tabellen-Funktion die Funktion mit, die
+        die aktuelle Woche ausgibt.
+    */
+    function handleCurrentWeekButton() {
+        fillTimeTable(getCurrentWeekNumber_Year);
+    }
+
+    /*
         Bekommt als Parameter eine Funktion mit, die die anzuzeigende Woche behandelt
         und befüllt den Stundenplan.
     */
@@ -352,6 +360,7 @@
         $('#klassenAuswahl').on('change', handleSelectedClass);
         $('#previous').on('click', handlePreviousWeekButton);
         $('#next').on('click', handleNextWeekButton);
+        $('#current').on('click', handleCurrentWeekButton);
     });
 </script>
 
