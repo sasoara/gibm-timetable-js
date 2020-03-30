@@ -150,16 +150,16 @@
         Bekommt als Parameter ein Datum Objekt und zieht
         davon exakt eine Woche ab.
     */
-    function subtractWeek(thursday) {
-        return new Date(thursday.getTime() - ms_Week);
+    function subtractWeek(date) {
+        return new Date(date.getTime() - ms_Week);
     }
 
     /*
         Bekommt als Parameter ein Datum Objekt und addiert
         davon exakt eine Woche dazu.
     */
-    function addWeek(thursday) {
-        return new Date(thursday.getTime() + ms_Week);
+    function addWeek(date) {
+        return new Date(date.getTime() + ms_Week);
     }
 
     /*
@@ -335,14 +335,13 @@
     }
 
     /*
-        Bekommt als Parameter eine Funktion mit, die die anzuzeigende Woche behandelt
-        und befüllt den Stundenplan.
+        Befüllt die Tabelle anhand des mitgegebenen Datum Objekt.
     */
-    function fillTimeTable(thursday) {
+    function fillTimeTable(date) {
         const selectedClass = $('#klassenAuswahl > option:selected');
         const lableWeek = $('#week');
         const s_progressBar = $('#progressbar');
-        const anotherWeek = dateToWeekYearString(thursday);
+        const anotherWeek = dateToWeekYearString(date);
         const table = $('#table');
         table.removeClass('d-table');
         table.hide();
