@@ -281,12 +281,18 @@
         }, 300);
         handleElementDisplaying(false);
         const job = $('#berufsgruppenAuswahl >> option:selected');
+        localStorage.setItem('job_id', job.val());
         getKlassen(job.val()).then((klassen) => {
             const options = prepareOptionsKlassen(klassen);
             s_klassenAuswahl.html('<option selected>Bitte Klasse wählen</option>');
             options.forEach((option) => {
                 s_klassenAuswahl.append(option);
             });
+            const classId = localStorage.getItem('class_id');
+            if (classId) {
+                $(`#klassenAuswahl > option[value=${classId}]`).prop('selected', true);
+                handleSelectedClass();
+            }
             s_progressBar.hide();
         });
     }
@@ -297,6 +303,8 @@
     */
     function handleSelectedClass() {
         $('#klassenAuswahl option').first().hide();
+        const clazz = $('#klassenAuswahl > option:selected');
+        localStorage.setItem('class_id', clazz.val());
         fillTimeTable(closestThursday);
     }
 
@@ -366,6 +374,13 @@
     */
     $(function () {
 
+        handleElementDisplaying(false);
+        $('#berufsgruppenAuswahl').on('change', handleSelectedJob);
+        $('#klassenAuswahl').on('change', handleSelectedClass);
+        $('#previous').on('click', handlePreviousWeekButton);
+        $('#next').on('click', handleNextWeekButton);
+        $('#current').on('click', handleCurrentWeekButton);
+
         getBerufe().then((jobs) => {
             const optionGroups = prepareOptionGroupsForBerufsgruppe(jobs);
             $('select.berufsgruppe').append(optionGroups);
@@ -375,14 +390,13 @@
                 const optionGroup = $(`optgroup[label = ${option.name[0]}]`);
                 optionGroup.append(option.tag);
             });
+            const jobId = localStorage.getItem('job_id');
+            if (jobId) {
+                $(`#berufsgruppenAuswahl >> option[value=${jobId}]`).prop('selected', true);
+                handleSelectedJob();
+            }
         });
 
-        handleElementDisplaying(false);
-        $('#berufsgruppenAuswahl').on('change', handleSelectedJob);
-        $('#klassenAuswahl').on('change', handleSelectedClass);
-        $('#previous').on('click', handlePreviousWeekButton);
-        $('#next').on('click', handleNextWeekButton);
-        $('#current').on('click', handleCurrentWeekButton);
     });
 </script>
 
