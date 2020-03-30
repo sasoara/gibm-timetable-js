@@ -78,6 +78,15 @@
         </tr>`;
 
     /*
+​        @ms_Day : ist ein Tag gegeben in Millisekunden.
+​        @ms_Week : ist eine Woche, gegeben in Millisekunden.
+    */
+    const ms_Day = 86400000;
+    const ms_Week = 604800000;
+
+    let closestThursday = calcClosestThursday(new Date());
+
+    /*
         Nimmt als Parameter eine Fehlermeldung und
         gibt diese aus.
     */
@@ -116,33 +125,41 @@
     }
 
     /*
-        Gibt die aktuelle Wochennummer mit dem Jahr im
-        Format 'ww-yyyy' zurück.
+        Bekommt als Parameter ein Datum Objekt und setzt es
+        auf den naheliegendsten Donnerstag.
     */
-    function getCurrentWeekNumber_Year() {
-        const today = new Date();
-        const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
-        const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
-        const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-        return `${weekNumber}-${today.getFullYear()}`;
+    function calcClosestThursday(date) {
+        const thursday = new Date(date);
+        thursday.setHours(0, 0, 0, 0);
+        thursday.setDate(thursday.getDate() + 4 - (thursday.getDay() || 7));
+        return thursday;
     }
 
     /*
-        Bekommt als Parameter die aktuelle Woche und das Jahr im Format 'ww-yyyy'
-        und gibt die vorherige Woche im gleichen Fromat zurück.
+        Bekommt als Parameter ein Datum Objekt und gibt davon
+        die Wochennummer und das Jahr ('WW-YYYY') zurück.
     */
-    function previousWeek_Year(current) {
-        const splitCurrent = current.split('-');
-        return `${splitCurrent[0] - 1}-${splitCurrent[1]}`;
+    function dateToWeekYearString(date) {
+        const thursday = calcClosestThursday(date);
+        const year = new Date(thursday.getFullYear(), 0, 1);
+        const weekNumber = Math.ceil((((thursday - year) / ms_Day) + 1) / 7);
+        return `${weekNumber}-${year.getFullYear()}`;
     }
 
     /*
-        Bekommt als Parameter die aktuelle Woche und das Jahr im Format 'ww-yyyy'
-        und gibt die nächste Woche im gleichen Fromat zurück.
+        Bekommt als Parameter ein Datum Objekt und zieht
+        davon exakt eine Woche ab.
     */
-    function nextWeek_Year(current) {
-        const splitCurrent = current.split('-');
-        return `${1 + parseInt(splitCurrent[0])}-${splitCurrent[1]}`;
+    function subtractWeek(thursday) {
+        return new Date(thursday.getTime() - ms_Week);
+    }
+
+    /*
+        Bekommt als Parameter ein Datum Objekt und addiert
+        davon exakt eine Woche dazu.
+    */
+    function addWeek(thursday) {
+        return new Date(thursday.getTime() + ms_Week);
     }
 
     /*
@@ -280,7 +297,7 @@
     */
     function handleSelectedClass() {
         $('#klassenAuswahl option').first().hide();
-        fillTimeTable(getCurrentWeekNumber_Year);
+        fillTimeTable(closestThursday);
     }
 
     /*
@@ -295,7 +312,8 @@
         die vorherige Woche ausgibt.
     */
     function handlePreviousWeekButton() {
-        fillTimeTable(previousWeek_Year);
+        closestThursday = subtractWeek(closestThursday);
+        fillTimeTable(closestThursday);
     }
 
     /*
@@ -303,7 +321,8 @@
         die nächste Woche ausgibt.
     */
     function handleNextWeekButton() {
-        fillTimeTable(nextWeek_Year);
+        closestThursday = addWeek(closestThursday);
+        fillTimeTable(closestThursday);
     }
 
     /*
@@ -311,18 +330,19 @@
         die aktuelle Woche ausgibt.
     */
     function handleCurrentWeekButton() {
-        fillTimeTable(getCurrentWeekNumber_Year);
+        closestThursday = calcClosestThursday(new Date());
+        fillTimeTable(closestThursday);
     }
 
     /*
         Bekommt als Parameter eine Funktion mit, die die anzuzeigende Woche behandelt
         und befüllt den Stundenplan.
     */
-    function fillTimeTable(handleWeekFunction) {
+    function fillTimeTable(thursday) {
         const selectedClass = $('#klassenAuswahl > option:selected');
         const lableWeek = $('#week');
         const s_progressBar = $('#progressbar');
-        const anotherWeek = handleWeekFunction(lableWeek.text());
+        const anotherWeek = dateToWeekYearString(thursday);
         const table = $('#table');
         table.removeClass('d-table');
         table.hide();
