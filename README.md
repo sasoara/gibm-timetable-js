@@ -9,14 +9,14 @@
 
 ### Background
 
-This project is ...
+This application was only implemented with client-side technologies. <a href="HTML CSS JS"><img src="https://user-images.githubusercontent.com/30186107/29488525-f55a69d0-84da-11e7-8a39-5476f663b5eb.png" align="center" width="55" ></a>
 
 
 
 ## Contributor ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](https://github.com/sasoara/)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 
@@ -26,13 +26,14 @@ This project is ...
 
 <table>
   <tr>
-    <td align="center"><a href="http://sasoara.com"><img src="https://avatars2.githubusercontent.com/u/51110137?v=4" width="100px;" alt=""/><br /><sub><b>Sarah Bettinger</b></sub></a><br /><a href="#maintenance-sasoara" title="Maintenance">🦕</a></td>
+    <td align="center"><a href="https://github.com/sasoara/"><img src="https://avatars2.githubusercontent.com/u/51110137?v=4" width="100px;" alt=""/><br /><sub><b>Sarah Bettinger</b></sub></a><br /><a href="http://sasoara.com" title="sarah's website">🦕</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 
 
-## How it looks
+____________________________
+
 
 ![Screenshot 2020-03-31 at 08 23 31](https://user-images.githubusercontent.com/51110137/77994711-c9390780-732a-11ea-8600-853d56b8c8f3.png)
