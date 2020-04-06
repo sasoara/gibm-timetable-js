@@ -213,7 +213,7 @@ function getTafel(klasse_id = 0, woche) {
 }
 
 /*
-    Behandelt die Anzeige der Klassen wenn ein Beruf ausgewählt worden ist.
+    Wird aufgerufen, sobald ein Beruf ausgewählt worden ist.
 */
 function handleSelectedJob() {
     const s_klassenAuswahl = $('#klassenAuswahl');
@@ -229,22 +229,26 @@ function handleSelectedJob() {
     const selectedJob = $('#berufsgruppenAuswahl >> option:selected');
     localStorage.setItem(storageKeys.JOB_ID, selectedJob.val());
     const storageJobId = localStorage.getItem(storageKeys.JOB_ID);
-    getKlassen(selectedJob ? selectedJob.val() : storageJobId).then((klassen) => {
-        const options = prepareOptionsKlassen(klassen);
-        s_klassenAuswahl.html('<option selected>Bitte Klasse wählen</option>');
-        options.forEach((option) => {
-            s_klassenAuswahl.append(option);
-        });
-        const storageClassId = localStorage.getItem(storageKeys.CLASS_ID);
-        if (storageClassId) {
-            const optionToSelect = $(`#klassenAuswahl > option[value=${storageClassId}]`);
-            if (optionToSelect) {
-                optionToSelect.prop('selected', true);
-                handleSelectedClass();
-            }
-        }
-        s_progressBar.hide();
+    getKlassen(selectedJob ? selectedJob.val() : storageJobId)
+        .then((klassen) => fillKlassenAuswahl(klassen, s_klassenAuswahl, s_progressBar));
+}
+
+/*
+    Befüllt die Klassenauswahl mit HTML <option>.
+*/
+function fillKlassenAuswahl(klassen, s_klassenAuswahl, s_progressBar) {
+    const options = prepareOptionsKlassen(klassen);
+    s_klassenAuswahl.html('<option selected>Bitte Klasse wählen</option>');
+    options.forEach((option) => {
+        s_klassenAuswahl.append(option);
     });
+    const storageClassId = localStorage.getItem(storageKeys.CLASS_ID);
+    const optionToSelect = $(`#klassenAuswahl > option[value=${storageClassId}]`);
+    if (optionToSelect) {
+        optionToSelect.prop('selected', true);
+        handleSelectedClass();
+    }
+    s_progressBar.hide();
 }
 
 /*
