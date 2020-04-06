@@ -1,5 +1,10 @@
 const serverUrl = 'http://sandbox.gibm.ch';
 
+const storageKeys = {
+    JOB_ID: 'job_id',
+    CLASS_ID: 'class_id'
+};
+
 const tableHeadContent =
     `<tr>
         <th>Datum</th>
@@ -222,15 +227,15 @@ function handleSelectedJob() {
     }, 300);
     handleElementDisplaying(false);
     const selectedJob = $('#berufsgruppenAuswahl >> option:selected');
-    localStorage.setItem('job_id', selectedJob.val());
-    const storageJobId = localStorage.getItem('job_id');
+    localStorage.setItem(storageKeys.JOB_ID, selectedJob.val());
+    const storageJobId = localStorage.getItem(storageKeys.JOB_ID);
     getKlassen(selectedJob ? selectedJob.val() : storageJobId).then((klassen) => {
         const options = prepareOptionsKlassen(klassen);
         s_klassenAuswahl.html('<option selected>Bitte Klasse wählen</option>');
         options.forEach((option) => {
             s_klassenAuswahl.append(option);
         });
-        const storageClassId = localStorage.getItem('class_id');
+        const storageClassId = localStorage.getItem(storageKeys.CLASS_ID);
         if (storageClassId) {
             const optionToSelect = $(`#klassenAuswahl > option[value=${storageClassId}]`);
             if (optionToSelect) {
@@ -250,10 +255,10 @@ function handleSelectedClass() {
     $('#klassenAuswahl option').first().hide();
     const selectedClass = $('#klassenAuswahl > option:selected');
     if (selectedClass.val() != "Bitte Klasse wählen") {
-        localStorage.setItem('class_id', selectedClass.val());
+        localStorage.setItem(storageKeys.CLASS_ID, selectedClass.val());
         fillTimeTable(closestThursday);
     } else {
-        localStorage.setItem('class_id', null);
+        localStorage.setItem(storageKeys.CLASS_ID, null);
     }
 
 }
@@ -340,7 +345,7 @@ $(function () {
             const optionGroup = $(`optgroup[label = ${option.name[0]}]`);
             optionGroup.append(option.tag);
         });
-        const jobId = localStorage.getItem('job_id');
+        const jobId = localStorage.getItem(storageKeys.JOB_ID);
         if (jobId) {
             $(`#berufsgruppenAuswahl >> option[value=${jobId}]`).prop('selected', true);
             handleSelectedJob();
