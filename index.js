@@ -221,18 +221,22 @@ function handleSelectedJob() {
         }
     }, 300);
     handleElementDisplaying(false);
-    const job = $('#berufsgruppenAuswahl >> option:selected');
-    localStorage.setItem('job_id', job.val());
-    getKlassen(job.val()).then((klassen) => {
+    const selectedJob = $('#berufsgruppenAuswahl >> option:selected');
+    localStorage.setItem('job_id', selectedJob.val());
+    const storageJobId = localStorage.getItem('job_id');
+    getKlassen(selectedJob ? selectedJob.val() : storageJobId).then((klassen) => {
         const options = prepareOptionsKlassen(klassen);
         s_klassenAuswahl.html('<option selected>Bitte Klasse wählen</option>');
         options.forEach((option) => {
             s_klassenAuswahl.append(option);
         });
-        const classId = localStorage.getItem('class_id');
-        if (classId) {
-            $(`#klassenAuswahl > option[value=${classId}]`).prop('selected', true);
-            handleSelectedClass();
+        const storageClassId = localStorage.getItem('class_id');
+        if (storageClassId) {
+            const optionToSelect = $(`#klassenAuswahl > option[value=${storageClassId}]`);
+            if (optionToSelect) {
+                optionToSelect.prop('selected', true);
+                handleSelectedClass();
+            }
         }
         s_progressBar.hide();
     });
@@ -244,9 +248,14 @@ function handleSelectedJob() {
 */
 function handleSelectedClass() {
     $('#klassenAuswahl option').first().hide();
-    const clazz = $('#klassenAuswahl > option:selected');
-    localStorage.setItem('class_id', clazz.val());
-    fillTimeTable(closestThursday);
+    const selectedClass = $('#klassenAuswahl > option:selected');
+    if (selectedClass.val() != "Bitte Klasse wählen") {
+        localStorage.setItem('class_id', selectedClass.val());
+        fillTimeTable(closestThursday);
+    } else {
+        localStorage.setItem('class_id', null);
+    }
+
 }
 
 /*
