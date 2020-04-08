@@ -7,6 +7,21 @@ const storageKeys = {
 
 Object.freeze(storageKeys);
 
+const htmlElements = {
+    MESSAGE: () => $('#message'),
+    JOB: () => $('#berufsgruppenAuswahl'),
+    CLASS: () => $('#klassenAuswahl'),
+    WEEKDISPLAY: () => $('#wochenanzeige'),
+    PREVIOUS: () => $('#previous'),
+    CURRENT: () => $('#current'),
+    WEEK: () => $('#week'),
+    NEXT: () => $('#next'),
+    PROGRESSBAR: () => $('#progressbar'),
+    TABLE: () => $('#table')
+};
+
+Object.freeze(htmlElements);
+
 const tableHeadContent =
     `<tr>
         <th>Datum</th>
@@ -32,7 +47,7 @@ let closestThursday = calcClosestThursday(new Date());
     gibt diese aus.
 */
 function showError(message) {
-    $('#message').show().text(message);
+    htmlElements.MESSAGE().show().text(message);
 }
 
 /*
@@ -159,18 +174,12 @@ function getHolidayContent() {
     oder anzeigen lässt.
 */
 function handleElementDisplaying(visible) {
-    const table = $('#table');
-    const wochenanzeige = $('#wochenanzeige');
     if (visible) {
-        table.addClass('d-table');
-        table.show();
-        wochenanzeige.addClass('d-table');
-        wochenanzeige.show();
+        htmlElements.TABLE().addClass('d-table').show();
+        htmlElements.WEEKDISPLAY().addClass('d-table').show();
     } else {
-        table.removeClass('d-table');
-        table.hide();
-        wochenanzeige.removeClass('d-table');
-        wochenanzeige.hide();
+        htmlElements.TABLE().removeClass('d-table').hide();
+        htmlElements.WEEKDISPLAY().removeClass('d-table').hide();
     }
 }
 
@@ -218,13 +227,11 @@ function getTafel(klasse_id = 0, woche) {
     Wird aufgerufen, sobald ein Beruf ausgewählt worden ist.
 */
 function handleSelectedJob() {
-    const s_klassenAuswahl = $('#klassenAuswahl');
-    const s_progressBar = $('#progressbar');
-    s_klassenAuswahl.html('');
+    htmlElements.CLASS().html('');
     window.setTimeout(() => {
-        const classesEmpty = s_klassenAuswahl.children().length;
+        const classesEmpty = htmlElements.CLASS().children().length;
         if (!classesEmpty) {
-            s_progressBar.fadeIn(300);
+            htmlElements.PROGRESSBAR().fadeIn(300);
         }
     }, 300);
     handleElementDisplaying(false);
@@ -232,17 +239,17 @@ function handleSelectedJob() {
     localStorage.setItem(storageKeys.JOB_ID, selectedJob.val());
     const storageJobId = localStorage.getItem(storageKeys.JOB_ID);
     getKlassen(selectedJob ? selectedJob.val() : storageJobId)
-        .then((klassen) => fillKlassenAuswahl(klassen, s_klassenAuswahl, s_progressBar));
+        .then((klassen) => fillKlassenAuswahl(klassen));
 }
 
 /*
     Befüllt die Klassenauswahl mit HTML <option>.
 */
-function fillKlassenAuswahl(klassen, s_klassenAuswahl, s_progressBar) {
+function fillKlassenAuswahl(klassen) {
     const options = prepareOptionsKlassen(klassen);
-    s_klassenAuswahl.html('<option selected>Bitte Klasse wählen</option>');
+    htmlElements.CLASS().html('<option selected>Bitte Klasse wählen</option>');
     options.forEach((option) => {
-        s_klassenAuswahl.append(option);
+        htmlElements.CLASS().append(option);
     });
     const storageClassId = localStorage.getItem(storageKeys.CLASS_ID);
     const optionToSelect = $(`#klassenAuswahl > option[value=${storageClassId}]`);
@@ -250,7 +257,7 @@ function fillKlassenAuswahl(klassen, s_klassenAuswahl, s_progressBar) {
         optionToSelect.prop('selected', true);
         handleSelectedClass();
     }
-    s_progressBar.hide();
+    htmlElements.PROGRESSBAR().hide();
 }
 
 /*
@@ -308,24 +315,20 @@ function handleCurrentWeekButton() {
 */
 function fillTimeTable(date) {
     const selectedClass = $('#klassenAuswahl > option:selected');
-    const lableWeek = $('#week');
-    const s_progressBar = $('#progressbar');
     const anotherWeek = dateToWeekYearString(date);
-    const table = $('#table');
-    table.removeClass('d-table');
-    table.hide();
-    lableWeek.text(anotherWeek);
+    htmlElements.TABLE().removeClass('d-table').hide();
+    htmlElements.WEEK().text(anotherWeek);
     window.setTimeout(() => {
-        const timeTableVisible = table.filter(':visible').length;
+        const timeTableVisible = htmlElements.TABLE().filter(':visible').length;
         if (!timeTableVisible) {
-            s_progressBar.fadeIn(300);
+            htmlElements.PROGRESSBAR().fadeIn(300);
         }
     }, 300);
     getTafel(selectedClass.val(), anotherWeek).then((tafeln) => {
         const tafelEmpty = tafeln.length;
         const tableContent = !tafelEmpty ? getHolidayContent() : composeTable(tafeln);
-        table.html(tableContent);
-        s_progressBar.hide();
+        htmlElements.TABLE().html(tableContent);
+        htmlElements.PROGRESSBAR().hide();
         handleElementDisplaying(true);
     });
 }
@@ -336,11 +339,11 @@ function fillTimeTable(date) {
 $(function () {
 
     handleElementDisplaying(false);
-    $('#berufsgruppenAuswahl').on('change', handleSelectedJob);
-    $('#klassenAuswahl').on('change', handleSelectedClass);
-    $('#previous').on('click', handlePreviousWeekButton);
-    $('#next').on('click', handleNextWeekButton);
-    $('#current').on('click', handleCurrentWeekButton);
+    htmlElements.JOB().on('change', handleSelectedJob);
+    htmlElements.CLASS().on('change', handleSelectedClass);
+    htmlElements.PREVIOUS().on('click', handlePreviousWeekButton);
+    htmlElements.NEXT().on('click', handleNextWeekButton);
+    htmlElements.CURRENT().on('click', handleCurrentWeekButton);
 
     getBerufe().then((jobs) => {
         const optionGroups = prepareOptionGroupsForBerufsgruppe(jobs);
