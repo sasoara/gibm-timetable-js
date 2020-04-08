@@ -239,7 +239,7 @@ function handleSelectedJob() {
     localStorage.setItem(storageKeys.JOB_ID, selectedJob.val());
     const storageJobId = localStorage.getItem(storageKeys.JOB_ID);
     getKlassen(selectedJob ? selectedJob.val() : storageJobId)
-        .then((klassen) => fillKlassenAuswahl(klassen));
+        .then(fillKlassenAuswahl);
 }
 
 /*
