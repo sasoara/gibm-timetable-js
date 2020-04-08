@@ -5,6 +5,8 @@ const storageKeys = {
     CLASS_ID: 'class_id'
 };
 
+Object.freeze(storageKeys);
+
 const tableHeadContent =
     `<tr>
         <th>Datum</th>
