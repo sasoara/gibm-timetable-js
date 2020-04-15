@@ -1,0 +1,22 @@
+{
+  "name": "timetable",
+  "version": "1.0.0",
+  "description": "gibm-timetable-js",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watchAll --collectCoverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sasoara/gibm-timetable-js.git"
+  },
+  "author": "Sarah Bettinger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sasoara/gibm-timetable-js/issues"
+  },
+  "homepage": "https://github.com/sasoara/gibm-timetable-js#readme",
+  "devDependencies": {
+    "jest": "^25.3.0"
+  }
+}
