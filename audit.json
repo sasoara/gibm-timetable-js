@@ -1,0 +1,44 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "lodash": {
+      "name": "lodash",
+      "severity": "low",
+      "via": [
+        {
+          "source": 1523,
+          "name": "lodash",
+          "dependency": "lodash",
+          "title": "Prototype Pollution",
+          "url": "https://npmjs.com/advisories/1523",
+          "severity": "low",
+          "range": "<4.17.19"
+        }
+      ],
+      "effects": [],
+      "range": "<4.17.19",
+      "nodes": [
+        "node_modules/lodash"
+      ],
+      "fixAvailable": true
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 1,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 1
+    },
+    "dependencies": {
+      "prod": 1,
+      "dev": 484,
+      "optional": 6,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 484
+    }
+  }
+}

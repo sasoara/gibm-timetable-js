@@ -3,5 +3,8 @@
 # Optional npm cache directory
 .npm
 
+# Coverage directory used by tools like jest
+coverage/
+
 # Dependency directories
 node_modules/
