@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/sasoara/gibm-timetable-js#readme",
   "devDependencies": {
-    "jest": "^25.3.0"
+    "jest": "^27.0.6"
   }
 }
