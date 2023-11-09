@@ -1,4 +1,4 @@
-const serverUrl = 'http://sandbox.gibm.ch';
+const serverUrl = 'https://sandbox.gibm.ch';
 
 const storageKeys = {
     JOB_ID: 'job_id',
